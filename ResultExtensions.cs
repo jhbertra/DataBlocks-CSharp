@@ -25,6 +25,12 @@ namespace AfeCodec
       return result.Bimap(f, e => e);
     }
 
+    public static Result<TError, T2> Select<TError, T1, T2>(this Result<TError, T1> result, Func<T1, T2> f)
+       where TError : struct, IMonoid<TError>
+    {
+      return result.Bimap(f, e => e);
+    }
+
     public static Result<TError2, T> MapError<TError1, TError2, T>(this Result<TError1, T> result, Func<TError1, TError2> f)
        where TError1 : struct, IMonoid<TError1>
        where TError2 : struct, IMonoid<TError2>
@@ -35,7 +41,19 @@ namespace AfeCodec
     public static Result<TError, T2> Bind<TError, T1, T2>(this Result<TError, T1> result, Func<T1, Result<TError, T2>> f)
        where TError : struct, IMonoid<TError>
     {
-      return result.Match(f, Result<TError, T2>.Error);
+      return result.Bind(f);
+    }
+
+    public static Result<TError, T2> SelectMany<TError, T1, TIntermediate, T2>(this Result<TError, T1> result, Func<T1, Result<TError, TIntermediate>> f, Func<T1, TIntermediate, T2> project)
+       where TError : struct, IMonoid<TError>
+    {
+      return result.Bind(x => f(x).Map(y => project(x, y)));
+    }
+
+    public static Func<TIn, Result<TError, T2>> KleisliRight<TIn, TError, T1, T2>(this Func<TIn, Result<TError, T1>> f, Func<T1, Result<TError, T2>> g)
+       where TError : struct, IMonoid<TError>
+    {
+      return x => f(x).Bind(g);
     }
 
     public static Result<TError, T2> Apply<TError, T1, T2>(this Result<TError, Func<T1, T2>> result1, Result<TError, T1> result2)
