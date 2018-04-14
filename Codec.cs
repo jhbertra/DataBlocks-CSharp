@@ -56,13 +56,23 @@ namespace DataBlocks
       );
     }
 
-    public static Codec<TRaw, TError, TWhole> Switch<TError, TRaw, TWhole>()
+    public static Codec<TRaw, TError, TWhole> Switch<TRaw, TError, TWhole>()
       where TRaw : struct, IMonoid<TRaw>
       where TError : struct, IMonoid<TError>
     {
       return new Codec<TRaw, TError, TWhole>(
           Decoder<TRaw, TError, TWhole>.Zero,
           Encoder<TWhole, TRaw>.Zero
+      );
+    }
+
+    public static Codec<TRaw, TError, TRich> Lift<TRaw, TError, TRich>(Func<TRaw, TRich> decode, Func<TRich, TRaw> encode)
+      where TRaw : struct, IMonoid<TRaw>
+      where TError : struct, IMonoid<TError>
+    {
+      return new Codec<TRaw, TError, TRich>(
+        new Decoder<TRaw, TError, TRich>(decode.ComposeRight(Result<TError, TRich>.Ok)),
+        new Encoder<TRich, TRaw>(encode)
       );
     }
     

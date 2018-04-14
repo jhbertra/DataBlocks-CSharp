@@ -61,21 +61,7 @@ namespace DataBlocks
         Encoder<TPart, TRaw> partEncoder)
       where TRaw : struct, IMonoid<TRaw>
     {
-      return Encoder.Divide<TWhole, TRaw, TPart, TWhole>(x => (getter(x), x), partEncoder, encoder);
-    }
-
-    public static Codec<TRaw, TError, TWhole> Case<TError, TRaw, TWhole, TCase>(
-        this Codec<TRaw, TError, TWhole> codec,
-        Func<TWhole, Maybe<TCase>> getter,
-        Func<TCase, TWhole> wrap,
-        Codec<TRaw, TError, TCase> caseBlock)
-      where TRaw : struct, IMonoid<TRaw>
-      where TError : struct, IMonoid<TError>
-    {
-      return new Codec<TRaw, TError, TWhole>(
-        Decoder.Choose(caseBlock.Decoder.Map(wrap), codec.Decoder),
-        codec.Encoder.Case(getter, caseBlock.Encoder)
-      );
+      return Encoder.Divide<TWhole, TRaw, TWhole, TPart>(x => (x, getter(x)), encoder, partEncoder);
     }
 
   }

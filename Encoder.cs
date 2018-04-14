@@ -3,7 +3,7 @@ using System;
 namespace DataBlocks
 {
 
-  public struct Encoder<TRich, TRaw> : IMonoid<Encoder<TRich, TRaw>>
+  public class Encoder<TRich, TRaw>
     where TRaw : struct, IMonoid<TRaw>
   {
 
@@ -15,14 +15,6 @@ namespace DataBlocks
     }
 
     public readonly Func<TRich, TRaw> Run;
-
-    public Encoder<TRich, TRaw> Append(Encoder<TRich, TRaw> b)
-    {
-      var self = this;
-      return new Encoder<TRich, TRaw>(x => self.Run(x).Append(b.Run(x)));
-    }
-    
-    public static Encoder<TRich, TRaw> operator +(Encoder<TRich, TRaw> a, Encoder<TRich, TRaw> b) => a.Append(b);
 
   }
 

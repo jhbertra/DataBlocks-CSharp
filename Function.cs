@@ -16,6 +16,16 @@ namespace DataBlocks
       return t => t.Match(f, g);
     }
 
+    public static Func<T1, T2> Curry1<T1, T2>(Func<T1, T2> f)
+    {
+      return f;
+    }
+
+    public static Func<T1, Func<T2, T3>> Curry2<T1, T2, T3>(Func<T1, T2, T3> f)
+    {
+      return t1 => t2 => f(t1, t2);
+    }
+
   }
 
 }

@@ -118,6 +118,20 @@ namespace DataBlocks
       );
     }
 
+    public static Codec<TRaw, TError, TRich> Case<TRaw, TError, TRich, TCase>(
+        this Codec<TRaw, TError, TRich> codec,
+        Func<TRich, Maybe<TCase>> getter,
+        Func<TCase, TRich> wrap,
+        Codec<TRaw, TError, TCase> caseCodec)
+      where TRaw : struct, IMonoid<TRaw>
+      where TError : struct, IMonoid<TError>
+    {
+      return new Codec<TRaw, TError, TRich>(
+        Decoder.Choose(caseCodec.Decoder.Map(wrap), codec.Decoder),
+        codec.Encoder.Case(getter, caseCodec.Encoder)
+      );
+    }
+
   }
 
 }
