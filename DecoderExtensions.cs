@@ -74,26 +74,6 @@ namespace DataBlocks
       return decoder.Map(f);
     }
 
-    public static Decoder<TRaw, TError, TRich> Choose<TError, TRaw, TRich>(
-        params Decoder<TRaw, TError, TRich>[] decoders)
-      where TError : struct, IMonoid<TError>
-      where TRaw : struct, IMonoid<TRaw>
-    {
-      return new Decoder<TRaw, TError, TRich>(x =>
-      {
-        var last = Result<TError, TRich>.Zero;
-        foreach (var result in decoders.Select(d => d.Run(x)))
-        {
-          if (result.IsOk)
-          {
-            return result;
-          }
-          last = result;
-        }
-        return last;
-      });
-    }
-
     public static Decoder<TRaw, TError, TRich> Compose<TError, TRaw, TIntermediate, TRich>(
         this Decoder<TRaw, TError, TIntermediate> left,
         Decoder<TIntermediate, TError, TRich> right)

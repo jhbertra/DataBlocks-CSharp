@@ -33,4 +33,24 @@ namespace DataBlocks
 
   }
 
+  public static class Result
+  {
+
+    public static Result<TError, T> Choose<TError, T>(params Result<TError, T>[] results)
+       where TError : struct, IMonoid<TError>
+    {
+      var last = Result<TError, T>.Zero;
+      foreach(var result in results)
+      {
+        if (result.IsOk)
+        {
+          return result;
+        }
+        last = result;
+      }
+      return last;
+    }
+
+  }
+
 }

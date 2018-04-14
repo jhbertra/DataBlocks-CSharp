@@ -8,7 +8,7 @@ namespace DataBlocks
 
     public static Maybe<T> None => new Maybe<T>(Either<object, T>.Case1(new object()));
 
-    public static Maybe<T> Ok(T value)
+    public static Maybe<T> Some(T value)
     {
       return new Maybe<T>(Either<object, T>.Case2(value));
     }

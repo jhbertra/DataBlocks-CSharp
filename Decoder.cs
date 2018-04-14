@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace DataBlocks
 {
@@ -32,6 +33,31 @@ namespace DataBlocks
 
     public static Decoder<TRaw, TError, TRich> Zero =>
       Decoder<TRaw, TError, TRich>.Return(Result<TError, TRich>.Zero);
+
+  }
+
+  public static class Decoder
+  {
+
+    public static Decoder<TRaw, TError, TRich> Choose<TError, TRaw, TRich>(
+        params Decoder<TRaw, TError, TRich>[] decoders)
+      where TError : struct, IMonoid<TError>
+      where TRaw : struct, IMonoid<TRaw>
+    {
+      return new Decoder<TRaw, TError, TRich>(x =>
+      {
+        var last = Result<TError, TRich>.Zero;
+        foreach (var result in decoders.Select(d => d.Run(x)))
+        {
+          if (result.IsOk)
+          {
+            return result;
+          }
+          last = result;
+        }
+        return last;
+      });
+    }
 
   }
 

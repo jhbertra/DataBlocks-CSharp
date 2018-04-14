@@ -40,51 +40,42 @@ namespace DataBlocks
       return e.Dimap(f, x => x);
     }
 
-    public static Encoder<TWhole, TRaw> Divide<TWhole, TRaw, TPart1, TPart2>(
-        Func<TWhole, (TPart1, TPart2)> divide,
-        Encoder<TPart1, TRaw> part1Encoder,
-        Encoder<TPart2, TRaw> part2Encoder)
-      where TRaw : struct, IMonoid<TRaw>
-    {
-      return new Encoder<TWhole, TRaw>(
-        divide
-        .ComposeRight(FuncExtensions.Split(part1Encoder.Run, part2Encoder.Run)
-        .ComposeRight(t => t.Item1.Append(t.Item2)))
-      );
-    }
-
-    public static Func<Encoder<TWhole, TRaw>, Encoder<TWhole, TRaw>> Part<TWhole, TRaw, TPart>(
-        Func<TWhole, TPart> getter,
-        Encoder<TPart, TRaw> partEncoder)
-      where TRaw : struct, IMonoid<TRaw>
-    {
-      return e2 => Divide<TWhole, TRaw, TPart, TWhole>(x => (getter(x), x), partEncoder, e2);
-    }
-
-    public static Encoder<TWhole, TRaw> Choose<TWhole, TRaw, TChoice1, TChoice2>(
-        Func<TWhole, Either<TChoice1, TChoice2>> alternate,
-        Encoder<TChoice1, TRaw> choice1Encoder,
-        Encoder<TChoice2, TRaw> choice2Encoder)
-      where TRaw : struct, IMonoid<TRaw>
-    {
-      return new Encoder<TWhole, TRaw>(
-        alternate.ComposeRight(FuncExtensions.FanIn(choice1Encoder.Run, choice2Encoder.Run))
-      );
-    }
-
-    public static Func<Encoder<TWhole, TRaw>, Encoder<TWhole, TRaw>> Case<TWhole, TRaw, TCase>(
+    public static Encoder<TWhole, TRaw> Case<TWhole, TRaw, TCase>(
+        this Encoder<TWhole, TRaw> encoder,
         Func<TWhole, Maybe<TCase>> getter,
         Encoder<TCase, TRaw> caseEncoder)
       where TRaw : struct, IMonoid<TRaw>
     {
-      return e2 =>
-        Choose<TWhole, TRaw, TCase, TWhole>(
-          x => getter(x).Match(
-            Either<TCase, TWhole>.Case1,
-            () => Either<TCase, TWhole>.Case2(x)),
-          caseEncoder,
-          e2
-        );
+      return Encoder.Choose<TWhole, TRaw, TCase, TWhole>(
+        x => getter(x).Match(
+          Either<TCase, TWhole>.Case1,
+          () => Either<TCase, TWhole>.Case2(x)),
+        caseEncoder,
+        encoder
+      );
+    }
+
+    public static Encoder<TWhole, TRaw> Part<TWhole, TRaw, TPart>(
+        this Encoder<TWhole, TRaw> encoder,
+        Func<TWhole, TPart> getter,
+        Encoder<TPart, TRaw> partEncoder)
+      where TRaw : struct, IMonoid<TRaw>
+    {
+      return Encoder.Divide<TWhole, TRaw, TPart, TWhole>(x => (getter(x), x), partEncoder, encoder);
+    }
+
+    public static Codec<TRaw, TError, TWhole> Case<TError, TRaw, TWhole, TCase>(
+        this Codec<TRaw, TError, TWhole> codec,
+        Func<TWhole, Maybe<TCase>> getter,
+        Func<TCase, TWhole> wrap,
+        Codec<TRaw, TError, TCase> caseBlock)
+      where TRaw : struct, IMonoid<TRaw>
+      where TError : struct, IMonoid<TError>
+    {
+      return new Codec<TRaw, TError, TWhole>(
+        Decoder.Choose(caseBlock.Decoder.Map(wrap), codec.Decoder),
+        codec.Encoder.Case(getter, caseBlock.Encoder)
+      );
     }
 
   }
