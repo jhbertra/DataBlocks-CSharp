@@ -1,6 +1,6 @@
 using System;
 
-namespace AfeCodec
+namespace DataBlocks
 {
 
   public struct Result<TError, TResult> where TError : struct, IMonoid<TError>

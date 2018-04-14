@@ -1,4 +1,4 @@
-namespace AfeCodec
+namespace DataBlocks
 {
 
   public interface IMonoid<T> where T : struct, IMonoid<T>

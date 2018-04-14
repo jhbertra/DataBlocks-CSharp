@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AfeCodec
+namespace DataBlocks
 {
     class Program
     {

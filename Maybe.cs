@@ -1,6 +1,6 @@
 using System;
 
-namespace AfeCodec
+namespace DataBlocks
 {
 
   public struct Maybe<T>

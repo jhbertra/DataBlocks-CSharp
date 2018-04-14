@@ -1,6 +1,6 @@
 using System;
 
-namespace AfeCodec
+namespace DataBlocks
 {
 
   public struct Either<T1, T2>

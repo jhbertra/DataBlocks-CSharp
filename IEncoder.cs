@@ -1,6 +1,6 @@
 using System;
 
-namespace AfeCodec
+namespace DataBlocks
 {
 
   public struct Encoder<TRich, TRaw> : IMonoid<Encoder<TRich, TRaw>>
@@ -23,7 +23,7 @@ namespace AfeCodec
     }
     
     public static Encoder<TRich, TRaw> operator +(Encoder<TRich, TRaw> a, Encoder<TRich, TRaw> b) => a.Append(b);
-    
+
   }
 
 }

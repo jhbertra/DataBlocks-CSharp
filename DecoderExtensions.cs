@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace AfeCodec
+namespace DataBlocks
 {
 
   public static class DecoderExtensions
