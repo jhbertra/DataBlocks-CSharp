@@ -5,6 +5,7 @@ namespace AfeCodec
 
   public sealed class Decoder<TRaw, TError, TRich>
     where TError : struct, IMonoid<TError>
+    where TRaw : struct, IMonoid<TRaw>
   {
 
     public readonly Func<TRaw, Result<TError, TRich>> Run;

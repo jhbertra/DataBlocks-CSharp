@@ -10,39 +10,26 @@ namespace AfeCodec
 
     public static Result<TError, TResult> Error(TError error)
     {
-      return new Result<TError, TResult>(false, default(TResult), error);
+      return new Result<TError, TResult>(Either<TError, TResult>.Case1(error));
     }
 
     public static Result<TError, TResult> Ok(TResult value)
     {
-      return new Result<TError, TResult>(true, value, default(TError));
+      return new Result<TError, TResult>(Either<TError, TResult>.Case2(value));
     }
 
-    private Result(bool isSuccess, TResult value, TError error)
+    private Result(Either<TError, TResult> data)
     {
-      this._isSuccess = isSuccess;
-      this._value = value;
-      this._error = error;
-      this._isInitialized = true;
+      this._data = data;
     }
 
-    public bool IsOk => this._isInitialized ? this._isSuccess : throw new InvalidOperationException("This result struct has not been initialized.");
+    public bool IsOk => this._data.IsCase2;
 
-    public bool IsError => !this.IsOk;
+    public bool IsError => this._data.IsCase1;
 
-    public T Match<T>(Func<TResult, T> ok, Func<TError, T> error)
-    {
-      return this._isInitialized 
-        ? this._isSuccess
-          ? ok(this._value)
-          : error(this._error)
-        : throw new InvalidOperationException("This result struct has not been initialized.");
-    }
-
-    private readonly bool _isInitialized;
-    private readonly bool _isSuccess;
-    private readonly TResult _value;
-    private readonly TError _error;
+    public T Match<T>(Func<TResult, T> ok, Func<TError, T> error) => _data.Match(error, ok);
+    
+    private Either<TError, TResult> _data;
 
   }
 

@@ -12,6 +12,8 @@ namespace AfeCodec
         Func<TRaw2, TRaw1> f,
         Func<TRich1, TRich2> g)
       where TError : struct, IMonoid<TError>
+      where TRaw1 : struct, IMonoid<TRaw1>
+      where TRaw2 : struct, IMonoid<TRaw2>
     {
       return new Decoder<TRaw2, TError, TRich2>(
         f.ComposeRight(
@@ -25,6 +27,7 @@ namespace AfeCodec
         this Decoder<TRaw, TError, TRich1> decoder,
         Func<TRich1, TRich2> f)
       where TError : struct, IMonoid<TError>
+      where TRaw : struct, IMonoid<TRaw>
     {
       return decoder.Dimap<TError, TRaw, TRich1, TRaw, TRich2>(x => x, f);
     }
@@ -33,6 +36,8 @@ namespace AfeCodec
         this Decoder<TRaw1, TError, TRich> decoder,
         Func<TRaw2, TRaw1> f)
       where TError : struct, IMonoid<TError>
+      where TRaw1 : struct, IMonoid<TRaw1>
+      where TRaw2 : struct, IMonoid<TRaw2>
     {
       return decoder.Dimap(f, x => x);
     }
@@ -41,6 +46,7 @@ namespace AfeCodec
         this Decoder<TRaw, TError, TRich1> decoder,
         Func<TRich1, Decoder<TRaw, TError, TRich2>> f)
       where TError : struct, IMonoid<TError>
+      where TRaw : struct, IMonoid<TRaw>
     {
       return new Decoder<TRaw, TError, TRich2>(
         x =>
@@ -54,6 +60,7 @@ namespace AfeCodec
         this Decoder<TRaw, TError, Func<TRich1, TRich2>> decoder1,
         Decoder<TRaw, TError, TRich1> decoder2)
       where TError : struct, IMonoid<TError>
+      where TRaw : struct, IMonoid<TRaw>
     {
       return new Decoder<TRaw, TError, TRich2>(x => decoder1.Run(x).Apply(decoder2.Run(x)));
     }
@@ -62,6 +69,7 @@ namespace AfeCodec
         this Func<TRich1, TRich2> f,
         Decoder<TRaw, TError, TRich1> decoder)
       where TError : struct, IMonoid<TError>
+      where TRaw : struct, IMonoid<TRaw>
     {
       return decoder.Map(f);
     }
@@ -69,6 +77,7 @@ namespace AfeCodec
     public static Decoder<TRaw, TError, TRich> Choose<TError, TRaw, TRich>(
         params Decoder<TRaw, TError, TRich>[] decoders)
       where TError : struct, IMonoid<TError>
+      where TRaw : struct, IMonoid<TRaw>
     {
       return new Decoder<TRaw, TError, TRich>(x =>
       {
@@ -89,6 +98,8 @@ namespace AfeCodec
         this Decoder<TRaw, TError, TIntermediate> left,
         Decoder<TIntermediate, TError, TRich> right)
       where TError : struct, IMonoid<TError>
+      where TRaw : struct, IMonoid<TRaw>
+      where TIntermediate : struct, IMonoid<TIntermediate>
     {
       return new Decoder<TRaw, TError, TRich>(
         x =>
