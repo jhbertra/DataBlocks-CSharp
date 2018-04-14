@@ -56,13 +56,13 @@ namespace DataBlocks
       );
     }
 
-    public static Decoder<TRaw, TError, TRich2> Apply<TError, TRaw, TRich1, TRich2>(
-        this Decoder<TRaw, TError, Func<TRich1, TRich2>> decoder1,
-        Decoder<TRaw, TError, TRich1> decoder2)
+    public static Decoder<TRaw, TError, (TRich1, TRich2)> Plus<TError, TRaw, TRich1, TRich2>(
+        this Decoder<TRaw, TError, TRich1> decoder1,
+        Decoder<TRaw, TError, TRich2> decoder2)
       where TError : struct, IMonoid<TError>
       where TRaw : struct, IMonoid<TRaw>
     {
-      return new Decoder<TRaw, TError, TRich2>(x => decoder1.Run(x).Apply(decoder2.Run(x)));
+      return new Decoder<TRaw, TError, (TRich1, TRich2)>(x => decoder1.Run(x).Plus(decoder2.Run(x)));
     }
 
     public static Decoder<TRaw, TError, TRich2> LiftApply<TError, TRaw, TRich1, TRich2>(
@@ -87,6 +87,15 @@ namespace DataBlocks
           from rich in right.Run(intermediate)
           select rich
       );
+    }
+
+    public static Decoder<TRaw, TError, TRich> Construct<TError, TRaw, TPart1, TPart2, TRich>(
+        this Decoder<TRaw, TError, (TPart1, TPart2)> decoder,
+        Func<TPart1, TPart2, TRich> f)
+      where TError : struct, IMonoid<TError>
+      where TRaw : struct, IMonoid<TRaw>
+    {
+      return decoder.Map(t => f(t.Item1, t.Item2));
     }
 
   }

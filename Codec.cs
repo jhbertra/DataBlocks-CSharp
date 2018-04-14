@@ -46,12 +46,12 @@ namespace DataBlocks
   public static class Codec
   {
 
-    public static Codec<TRaw, TError, TRichEncoder, TRichDecoder> Construct<TRaw, TError, TRichEncoder, TRichDecoder>(TRichDecoder f)
+    public static Codec<TRaw, TError, TRichEncoder, Unit> BeginConstruction<TRaw, TError, TRichEncoder>()
       where TRaw : struct, IMonoid<TRaw>
       where TError : struct, IMonoid<TError>
     {
-      return new Codec<TRaw, TError, TRichEncoder, TRichDecoder>(
-        Decoder<TRaw, TError, TRichDecoder>.Succeed(f),
+      return new Codec<TRaw, TError, TRichEncoder, Unit>(
+        Decoder<TRaw, TError, Unit>.Succeed(Unit.Default),
         Encoder<TRichEncoder, TRaw>.Zero
       );
     }

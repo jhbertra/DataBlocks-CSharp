@@ -105,15 +105,28 @@ namespace DataBlocks
       );
     }
 
-    public static Codec<TRaw, TError, TWhole, TNext> Part<TError, TWhole, TRaw, TNext, TPart>(
-        this Codec<TRaw, TError, TWhole, Func<TPart, TNext>> codec,
+    public static Codec<TRaw, TError, TWhole, TPart> Part<TError, TWhole, TRaw, TPart>(
+        this Codec<TRaw, TError, TWhole, Unit> codec,
         Func<TWhole, TPart> getter,
         Codec<TRaw, TError, TPart> partCodec)
       where TRaw : struct, IMonoid<TRaw>
       where TError : struct, IMonoid<TError>
     {
-      return new Codec<TRaw, TError, TWhole, TNext>(
-        codec.Decoder.Apply(partCodec.Decoder),
+      return new Codec<TRaw, TError, TWhole, TPart>(
+        partCodec.Decoder,
+        codec.Encoder.Part(getter, partCodec.Encoder)
+      );
+    }
+
+    public static Codec<TRaw, TError, TWhole, (TPrevious, TPart)> Part<TError, TWhole, TRaw, TPrevious, TPart>(
+        this Codec<TRaw, TError, TWhole, TPrevious> codec,
+        Func<TWhole, TPart> getter,
+        Codec<TRaw, TError, TPart> partCodec)
+      where TRaw : struct, IMonoid<TRaw>
+      where TError : struct, IMonoid<TError>
+    {
+      return new Codec<TRaw, TError, TWhole, (TPrevious, TPart)>(
+        codec.Decoder.Plus(partCodec.Decoder),
         codec.Encoder.Part(getter, partCodec.Encoder)
       );
     }
@@ -130,6 +143,45 @@ namespace DataBlocks
         Decoder.Choose(caseCodec.Decoder.Map(wrap), codec.Decoder),
         codec.Encoder.Case(getter, caseCodec.Encoder)
       );
+    }
+
+    public static Codec<TRaw, TError, TRich> Construct<TRaw, TError, TRich, T1, T2>(
+      this Codec<TRaw, TError, TRich, (T1 t1, T2 t2)> codec,
+      Func<T1, T2, TRich> f)
+      where TRaw : struct, IMonoid<TRaw>
+      where TError : struct, IMonoid<TError>
+    {
+      return new Codec<TRaw, TError, TRich>(
+        codec.Decoder.Map(t => f(t.t1, t.t2)),
+        codec.Encoder
+      );
+    }
+
+    public static Codec<TRaw, TError, TRich> Construct<TRaw, TError, TRich, T1, T2, T3>(
+      this Codec<TRaw, TError, TRich, ((T1 t1, T2 t2), T3 t3)> codec,
+      Func<T1, T2, T3, TRich> f)
+      where TRaw : struct, IMonoid<TRaw>
+      where TError : struct, IMonoid<TError>
+    {
+      return codec.Construct((t, v) => f(t.t1, t.t2, v));
+    }
+
+    public static Codec<TRaw, TError, TRich> Construct<TRaw, TError, TRich, T1, T2, T3, T4>(
+      this Codec<TRaw, TError, TRich, (((T1 t1, T2 t2), T3 t3), T4 t4)> codec,
+      Func<T1, T2, T3, T4, TRich> f)
+      where TRaw : struct, IMonoid<TRaw>
+      where TError : struct, IMonoid<TError>
+    {
+      return codec.Construct((t, v1, v2) => f(t.t1, t.t2, v1, v2));
+    }
+
+    public static Codec<TRaw, TError, TRich> Construct<TRaw, TError, TRich, T1, T2, T3, T4, T5>(
+      this Codec<TRaw, TError, TRich, ((((T1 t1, T2 t2), T3 t3), T4 t4), T5 t5)> codec,
+      Func<T1, T2, T3, T4, T5, TRich> f)
+      where TRaw : struct, IMonoid<TRaw>
+      where TError : struct, IMonoid<TError>
+    {
+      return codec.Construct((t, v1, v2, v3) => f(t.t1, t.t2, v1, v2, v3));
     }
 
   }

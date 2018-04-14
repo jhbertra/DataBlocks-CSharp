@@ -56,16 +56,16 @@ namespace DataBlocks
       return x => f(x).Bind(g);
     }
 
-    public static Result<TError, T2> Apply<TError, T1, T2>(this Result<TError, Func<T1, T2>> result1, Result<TError, T1> result2)
+    public static Result<TError, (T1, T2)> Plus<TError, T1, T2>(this Result<TError, T1> result1, Result<TError, T2> result2)
        where TError : struct, IMonoid<TError>
     {
       return result1.Match(
-        f => result2.Match(
-          f.ComposeRight(Result<TError, T2>.Ok),
-          Result<TError, T2>.Error),
+        v1 => result2.Match(
+          v2 => Result<TError, (T1, T2)>.Ok((v1, v2)),
+          Result<TError, (T1, T2)>.Error),
         e1 => result2.Match(
-          _ => Result<TError, T2>.Error(e1),
-          e2 => Result<TError,T2>.Error(e1.Append(e2)))
+          _ => Result<TError, (T1, T2)>.Error(e1),
+          e2 => Result<TError,(T1, T2)>.Error(e1.Append(e2)))
       );
     }
     
