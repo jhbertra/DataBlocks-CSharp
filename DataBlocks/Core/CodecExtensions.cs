@@ -8,152 +8,141 @@ namespace DataBlocks.Core
   public static partial class CodecExtensions
   {
 
-    public static Codec<TRaw2, TError, TRich2> Invmap2<TError, TRaw1, TRaw2, TRich1, TRich2>(
-        this Codec<TRaw1, TError, TRich1> codec,
+    public static Codec<TRaw2, TRich2> Invmap2<TRaw1, TRaw2, TRich1, TRich2>(
+        this Codec<TRaw1, TRich1> codec,
         Func<TRaw1, TRaw2> f,
         Func<TRaw2, TRaw1> g,
         Func<TRich1, TRich2> h,
         Func<TRich2, TRich1> i)
-      where TError : struct, IMonoid<TError>
       where TRaw1 : struct, IMonoid<TRaw1>
       where TRaw2 : struct, IMonoid<TRaw2>
     {
-      return new Codec<TRaw2, TError, TRich2>(
+      return new Codec<TRaw2, TRich2>(
         codec.Decoder.Dimap(g, h),
         codec.Encoder.Dimap(i, f)
       );
     }
 
-    public static Codec<TRaw2, TError, TRich> InvmapRaw<TError, TRaw1, TRaw2, TRich>(
-        this Codec<TRaw1, TError, TRich> codec,
+    public static Codec<TRaw2, TRich> InvmapRaw<TRaw1, TRaw2, TRich>(
+        this Codec<TRaw1, TRich> codec,
         Func<TRaw1, TRaw2> f,
         Func<TRaw2, TRaw1> g)
-      where TError : struct, IMonoid<TError>
       where TRaw1 : struct, IMonoid<TRaw1>
       where TRaw2 : struct, IMonoid<TRaw2>
     {
-      return new Codec<TRaw2, TError, TRich>(
+      return new Codec<TRaw2, TRich>(
         codec.Decoder.Contramap(g),
         codec.Encoder.Map(f)
       );
     }
 
-    public static Codec<TRaw, TError, TRich2> InvmapRich<TError, TRaw, TRich1, TRich2>(
-        this Codec<TRaw, TError, TRich1> codec,
+    public static Codec<TRaw, TRich2> InvmapRich<TRaw, TRich1, TRich2>(
+        this Codec<TRaw, TRich1> codec,
         Func<TRich1, TRich2> f,
         Func<TRich2, TRich1> g)
-      where TError : struct, IMonoid<TError>
       where TRaw : struct, IMonoid<TRaw>
     {
-      return new Codec<TRaw, TError, TRich2>(
+      return new Codec<TRaw, TRich2>(
         codec.Decoder.Map(f),
         codec.Encoder.Contramap(g)
       );
     }
 
-    public static Codec<TRaw2, TError, TRich2> Epimap2<TError, TRaw1, TRaw2, TRich1, TRich2>(
-        this Codec<TRaw1, TError, TRich1> codec,
+    public static Codec<TRaw2, TRich2> Epimap2<TRaw1, TRaw2, TRich1, TRich2>(
+        this Codec<TRaw1, TRich1> codec,
         Func<TRaw1, TRaw2> f,
-        Func<TRaw2, Result<TError, TRaw1>> g,
-        Func<TRich1, Result<TError, TRich2>> h,
+        Func<TRaw2, Result<DecoderError, TRaw1>> g,
+        Func<TRich1, Result<DecoderError, TRich2>> h,
         Func<TRich2, TRich1> i)
-      where TError : struct, IMonoid<TError>
       where TRaw1 : struct, IMonoid<TRaw1>
       where TRaw2 : struct, IMonoid<TRaw2>
     {
-      return new Codec<TRaw2, TError, TRich2>(
-        new Decoder<TRaw2, TError, TRich2>(g.KleisliRight(codec.Decoder.Run).KleisliRight(h)),
+      return new Codec<TRaw2, TRich2>(
+        new Decoder<TRaw2, TRich2>("", (id, x) => g(x).Bind(y => codec.Decoder.Run(id, y)).Bind(h)),
         codec.Encoder.Dimap(i, f)
       );
     }
 
-    public static Codec<TRaw2, TError, TRich> EpimapRaw<TError, TRaw1, TRaw2, TRich>(
-        this Codec<TRaw1, TError, TRich> codec,
+    public static Codec<TRaw2, TRich> EpimapRaw<TRaw1, TRaw2, TRich>(
+        this Codec<TRaw1, TRich> codec,
         Func<TRaw1, TRaw2> f,
-        Func<TRaw2, Result<TError, TRaw1>> g)
-      where TError : struct, IMonoid<TError>
+        Func<TRaw2, Result<DecoderError, TRaw1>> g)
       where TRaw1 : struct, IMonoid<TRaw1>
       where TRaw2 : struct, IMonoid<TRaw2>
     {
-      return new Codec<TRaw2, TError, TRich>(
-        new Decoder<TRaw2, TError, TRich>(g.KleisliRight(codec.Decoder.Run)),
+      return new Codec<TRaw2, TRich>(
+        new Decoder<TRaw2, TRich>("", (id, x) => g(x).Bind(y => codec.Decoder.Run(id, y))),
         codec.Encoder.Map(f)
       );
     }
 
-    public static Codec<TRaw, TError, TRich2> EpimapRich<TError, TRaw, TRich1, TRich2>(
-        this Codec<TRaw, TError, TRich1> codec,
-        Func<TRich1, Result<TError, TRich2>> f,
+    public static Codec<TRaw, TRich2> EpimapRich<TRaw, TRich1, TRich2>(
+        this Codec<TRaw, TRich1> codec,
+        Func<TRich1, Result<DecoderError, TRich2>> f,
         Func<TRich2, TRich1> g)
-      where TError : struct, IMonoid<TError>
       where TRaw : struct, IMonoid<TRaw>
     {
-      return new Codec<TRaw, TError, TRich2>(
-        new Decoder<TRaw, TError, TRich2>(codec.Decoder.Run.KleisliRight(f)),
+      return new Codec<TRaw, TRich2>(
+        new Decoder<TRaw, TRich2>("", (id, x) => codec.Decoder.Run(id, x).Bind(f)),
         codec.Encoder.Contramap(g)
       );
     }
 
-    public static Codec<TRaw, TError, TRich> Compose<TError, TRaw, TIntermediate, TRich>(
-        this Codec<TRaw, TError, TIntermediate> codec1,
-        Codec<TIntermediate, TError, TRich> codec2)
-      where TError : struct, IMonoid<TError>
+    public static Codec<TRaw, TRich> Compose<TRaw, TIntermediate, TRich>(
+        this Codec<TRaw, TIntermediate> codec1,
+        Codec<TIntermediate, TRich> codec2)
       where TIntermediate : struct, IMonoid<TIntermediate>
       where TRaw : struct, IMonoid<TRaw>
     {
-      return new Codec<TRaw, TError, TRich>(
+      return new Codec<TRaw, TRich>(
         codec1.Decoder.Compose(codec2.Decoder),
         codec2.Encoder.ComposeRight(codec1.Encoder)
       );
     }
 
-    public static Codec<TRaw, TError, TWhole, TPart> Part<TError, TWhole, TRaw, TPart>(
-        this Codec<TRaw, TError, TWhole, Unit> codec,
+    public static Codec<TRaw, TWhole, TPart> Part<TWhole, TRaw, TPart>(
+        this Codec<TRaw, TWhole, Unit> codec,
         Func<TWhole, TPart> getter,
-        Codec<TRaw, TError, TPart> partCodec)
+        Codec<TRaw, TPart> partCodec)
       where TRaw : struct, IMonoid<TRaw>
-      where TError : struct, IMonoid<TError>
     {
-      return new Codec<TRaw, TError, TWhole, TPart>(
+      return new Codec<TRaw, TWhole, TPart>(
         partCodec.Decoder,
         codec.Encoder.Part(getter, partCodec.Encoder)
       );
     }
 
-    public static Codec<TRaw, TError, TWhole, (TPrevious, TPart)> Part<TError, TWhole, TRaw, TPrevious, TPart>(
-        this Codec<TRaw, TError, TWhole, TPrevious> codec,
+    public static Codec<TRaw, TWhole, (TPrevious, TPart)> Part<TWhole, TRaw, TPrevious, TPart>(
+        this Codec<TRaw, TWhole, TPrevious> codec,
         Func<TWhole, TPart> getter,
-        Codec<TRaw, TError, TPart> partCodec)
+        Codec<TRaw, TPart> partCodec)
       where TRaw : struct, IMonoid<TRaw>
-      where TError : struct, IMonoid<TError>
     {
-      return new Codec<TRaw, TError, TWhole, (TPrevious, TPart)>(
+      return new Codec<TRaw, TWhole, (TPrevious, TPart)>(
         codec.Decoder.Plus(partCodec.Decoder),
         codec.Encoder.Part(getter, partCodec.Encoder)
       );
     }
 
-    public static Codec<TRaw, TError, TRich> Case<TRaw, TError, TRich, TCase>(
-        this Codec<TRaw, TError, TRich> codec,
+    public static Codec<TRaw, TRich> Case<TRaw, TRich, TCase>(
+        this Codec<TRaw, TRich> codec,
         Func<TRich, Maybe<TCase>> getter,
         Func<TCase, TRich> wrap,
-        Codec<TRaw, TError, TCase> caseCodec)
+        Codec<TRaw, TCase> caseCodec)
       where TRaw : struct, IMonoid<TRaw>
-      where TError : struct, IMonoid<TError>
     {
-      return new Codec<TRaw, TError, TRich>(
+      return new Codec<TRaw, TRich>(
         Decoder.Choose(caseCodec.Decoder.Map(wrap), codec.Decoder),
         codec.Encoder.Case(getter, caseCodec.Encoder)
       );
     }
 
-    public static Codec<TRaw, TError, TRich> Construct<TRaw, TError, TRich, T1, T2>(
-      this Codec<TRaw, TError, TRich, (T1 t1, T2 t2)> codec,
+    public static Codec<TRaw, TRich> Construct<TRaw, TRich, T1, T2>(
+      this Codec<TRaw, TRich, (T1 t1, T2 t2)> codec,
       Func<T1, T2, TRich> f)
       where TRaw : struct, IMonoid<TRaw>
-      where TError : struct, IMonoid<TError>
     {
-      return new Codec<TRaw, TError, TRich>(
+      return new Codec<TRaw, TRich>(
         codec.Decoder.Map(t => f(t.t1, t.t2)),
         codec.Encoder
       );

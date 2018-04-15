@@ -5,42 +5,40 @@ using DataBlocks.Prelude;
 namespace DataBlocks.Core
 {
 
-  public sealed class Codec<TRaw, TError, TRichEncoder, TRichDecoder>
-    where TError : struct, IMonoid<TError>
+  public sealed class Codec<TRaw, TRichEncoder, TRichDecoder>
     where TRaw : struct, IMonoid<TRaw>
   {
 
-      public Codec(Decoder<TRaw, TError, TRichDecoder> decoder, Encoder<TRichEncoder, TRaw> encoder)
+      public Codec(Decoder<TRaw, TRichDecoder> decoder, Encoder<TRichEncoder, TRaw> encoder)
       {
         this.Decoder = decoder;
         this.Encoder = encoder;
       }
       
-      public readonly Decoder<TRaw, TError, TRichDecoder> Decoder;
+      public readonly Decoder<TRaw, TRichDecoder> Decoder;
       public readonly Encoder<TRichEncoder, TRaw> Encoder;
 
   }
 
-  public sealed class Codec<TRaw, TError, TRich>
-    where TError : struct, IMonoid<TError>
+  public sealed class Codec<TRaw, TRich>
     where TRaw : struct, IMonoid<TRaw>
   {
 
-      public Codec(Decoder<TRaw, TError, TRich> decoder, Encoder<TRich, TRaw> encoder)
+      public Codec(Decoder<TRaw, TRich> decoder, Encoder<TRich, TRaw> encoder)
       {
         this.Decoder = decoder;
         this.Encoder = encoder;
       }
       
-      public readonly Decoder<TRaw, TError, TRich> Decoder;
+      public readonly Decoder<TRaw, TRich> Decoder;
       public readonly Encoder<TRich, TRaw> Encoder;
 
-      public Result<TError, TRich> Decode(TRaw raw) => this.Decoder.Run(raw);
+      public Result<DecoderError, TRich> Decode(TRaw raw) => this.Decoder.Run(this.Decoder.Id, raw);
       public TRaw Encode(TRich rich) => this.Encoder.Run(rich);
 
-      public static implicit operator Codec<TRaw, TError, TRich>(Codec<TRaw, TError, TRich, TRich> disengaged)
+      public static implicit operator Codec<TRaw, TRich>(Codec<TRaw, TRich, TRich> disengaged)
       {
-        return new Codec<TRaw, TError, TRich>(disengaged.Decoder, disengaged.Encoder);
+        return new Codec<TRaw, TRich>(disengaged.Decoder, disengaged.Encoder);
       }
 
   }
@@ -48,32 +46,29 @@ namespace DataBlocks.Core
   public static class Codec
   {
 
-    public static Codec<TRaw, TError, TRichEncoder, Unit> BeginConstruction<TRaw, TError, TRichEncoder>()
+    public static Codec<TRaw, TRichEncoder, Unit> BeginConstruction<TRaw, TRichEncoder>()
       where TRaw : struct, IMonoid<TRaw>
-      where TError : struct, IMonoid<TError>
     {
-      return new Codec<TRaw, TError, TRichEncoder, Unit>(
-        Decoder<TRaw, TError, Unit>.Succeed(Unit.Default),
+      return new Codec<TRaw, TRichEncoder, Unit>(
+        Decoder<TRaw, Unit>.Succeed("", Unit.Default),
         Encoder<TRichEncoder, TRaw>.Zero
       );
     }
 
-    public static Codec<TRaw, TError, TWhole> Switch<TRaw, TError, TWhole>()
+    public static Codec<TRaw, TWhole> Switch<TRaw, TWhole>()
       where TRaw : struct, IMonoid<TRaw>
-      where TError : struct, IMonoid<TError>
     {
-      return new Codec<TRaw, TError, TWhole>(
-          Decoder<TRaw, TError, TWhole>.Zero,
+      return new Codec<TRaw, TWhole>(
+          Decoder<TRaw, TWhole>.Zero,
           Encoder<TWhole, TRaw>.Zero
       );
     }
 
-    public static Codec<TRaw, TError, TRich> Lift<TRaw, TError, TRich>(Func<TRaw, TRich> decode, Func<TRich, TRaw> encode)
+    public static Codec<TRaw, TRich> Lift<TRaw, TRich>(Func<TRaw, TRich> decode, Func<TRich, TRaw> encode)
       where TRaw : struct, IMonoid<TRaw>
-      where TError : struct, IMonoid<TError>
     {
-      return new Codec<TRaw, TError, TRich>(
-        new Decoder<TRaw, TError, TRich>(decode.ComposeRight(Result<TError, TRich>.Ok)),
+      return new Codec<TRaw, TRich>(
+        new Decoder<TRaw, TRich>("", (_, x) => Result<DecoderError, TRich>.Ok(decode(x))),
         new Encoder<TRich, TRaw>(encode)
       );
     }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DataBlocks.Prelude
 {
@@ -67,6 +69,23 @@ namespace DataBlocks.Prelude
           _ => Result<TError, (T1, T2)>.Error(e1),
           e2 => Result<TError,(T1, T2)>.Error(e1.Append(e2)))
       );
+    }
+
+    public static Result<TError, IEnumerable<T>> Sequence<TError, T>(this IEnumerable<Result<TError, T>> results)
+       where TError : struct, IMonoid<TError>
+    {
+      var outcome = results.Aggregate(
+        new { HasError = false, Error = default(TError).Zero, Results = Enumerable.Empty<T>() },
+        (state, result) => 
+          result.Match(
+            x => new { state.HasError, state.Error, Results = state.Results.Concat(new [] { x }) },
+            e => new { HasError = true, Error = state.Error.Append(e), state.Results }
+          )
+      );
+
+      return outcome.HasError
+        ? Result<TError, IEnumerable<T>>.Error(outcome.Error)
+        : Result<TError, IEnumerable<T>>.Ok(outcome.Results);
     }
     
   }

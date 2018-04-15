@@ -6,59 +6,60 @@ using DataBlocks.Prelude;
 namespace DataBlocks.Core
 {
 
-  public sealed class Decoder<TRaw, TError, TRich>
-    where TError : struct, IMonoid<TError>
-    where TRaw : struct, IMonoid<TRaw>
+  public sealed class Decoder<TRaw, TRich> where TRaw : struct, IMonoid<TRaw>
   {
 
-    public readonly Func<TRaw, Result<TError, TRich>> Run;
-
-    public Decoder(Func<TRaw, Result<TError, TRich>> run)
+    public Decoder(string id, Func<string, TRaw, Result<DecoderError, TRich>> run)
     {
       this.Run = run;
+      this.Id = id;
     }
 
-    public static Decoder<TRaw, TError, TRich> Return(Result<TError, TRich> x)
+    public static Decoder<TRaw, TRich> Return(string id, Result<DecoderError, TRich> x)
     {
-      return new Decoder<TRaw, TError, TRich>(_ => x);
+      return new Decoder<TRaw, TRich>(id, (i, _) => x);
     }
 
-    public static Decoder<TRaw, TError, TRich> Succeed(TRich x)
+    public static Decoder<TRaw, TRich> Succeed(string id, TRich x)
     {
-      return Decoder<TRaw, TError, TRich>.Return(Result<TError, TRich>.Ok(x));
+      return Decoder<TRaw, TRich>.Return(id, Result<DecoderError, TRich>.Ok(x));
     }
 
-    public static Decoder<TRaw, TError, TRich> Fail(TError e)
+    public static Decoder<TRaw, TRich> Fail(string id, DecoderError e)
     {
-      return Decoder<TRaw, TError, TRich>.Return(Result<TError, TRich>.Error(e));
+      return Decoder<TRaw, TRich>.Return(id, Result<DecoderError, TRich>.Error(e));
     }
 
-    public static Decoder<TRaw, TError, TRich> Zero =>
-      Decoder<TRaw, TError, TRich>.Return(Result<TError, TRich>.Zero);
+    public readonly string Id;
+    public readonly Func<string, TRaw, Result<DecoderError, TRich>> Run;
+
+    public static Decoder<TRaw, TRich> Zero =>
+      Decoder<TRaw, TRich>.Return("", Result<DecoderError, TRich>.Zero);
 
   }
 
   public static class Decoder
   {
 
-    public static Decoder<TRaw, TError, TRich> Choose<TError, TRaw, TRich>(
-        params Decoder<TRaw, TError, TRich>[] decoders)
-      where TError : struct, IMonoid<TError>
+    public static Decoder<TRaw, TRich> Choose<TRaw, TRich>(params Decoder<TRaw, TRich>[] decoders)
       where TRaw : struct, IMonoid<TRaw>
     {
-      return new Decoder<TRaw, TError, TRich>(x =>
-      {
-        var last = Result<TError, TRich>.Zero;
-        foreach (var result in decoders.Select(d => d.Run(x)))
+      return new Decoder<TRaw, TRich>(
+        "",
+        (id, x) =>
         {
-          if (result.IsOk)
+          var last = Result<DecoderError, TRich>.Zero;
+          foreach (var result in decoders.Select(d => d.Run(id, x)))
           {
-            return result;
+            if (result.IsOk)
+            {
+              return result;
+            }
+            last = result;
           }
-          last = result;
+          return last;
         }
-        return last;
-      });
+      );
     }
 
   }
