@@ -1,6 +1,8 @@
 using System;
 
-namespace DataBlocks
+using DataBlocks.Prelude;
+
+namespace DataBlocks.Core
 {
 
   public class Encoder<TRich, TRaw>

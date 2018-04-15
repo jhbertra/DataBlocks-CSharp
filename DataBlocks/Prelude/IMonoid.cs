@@ -1,4 +1,4 @@
-namespace DataBlocks
+namespace DataBlocks.Prelude
 {
 
   public interface IMonoid<T> where T : struct, IMonoid<T>

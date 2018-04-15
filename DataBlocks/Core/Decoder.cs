@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
 
-namespace DataBlocks
+using DataBlocks.Prelude;
+
+namespace DataBlocks.Core
 {
 
   public sealed class Decoder<TRaw, TError, TRich>

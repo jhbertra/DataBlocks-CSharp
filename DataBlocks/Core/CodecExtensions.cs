@@ -1,6 +1,8 @@
 using System;
 
-namespace DataBlocks
+using DataBlocks.Prelude;
+
+namespace DataBlocks.Core
 {
 
   public static partial class CodecExtensions

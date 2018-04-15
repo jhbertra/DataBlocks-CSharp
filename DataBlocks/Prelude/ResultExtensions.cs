@@ -1,6 +1,6 @@
 using System;
 
-namespace DataBlocks
+namespace DataBlocks.Prelude
 {
 
   public static class ResultExtensions

@@ -1,4 +1,4 @@
-namespace DataBlocks
+namespace DataBlocks.Prelude
 {
 
   public struct Unit : IMonoid<Unit>
