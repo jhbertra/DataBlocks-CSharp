@@ -41,7 +41,7 @@ namespace DataBlocks.Prelude
     public static Result<TError, T2> Bind<TError, T1, T2>(this Result<TError, T1> result, Func<T1, Result<TError, T2>> f)
        where TError : struct, IMonoid<TError>
     {
-      return result.Bind(f);
+      return result.Match(f, Result<TError, T2>.Error);
     }
 
     public static Result<TError, T2> SelectMany<TError, T1, TIntermediate, T2>(this Result<TError, T1> result, Func<T1, Result<TError, TIntermediate>> f, Func<T1, TIntermediate, T2> project)
