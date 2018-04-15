@@ -34,8 +34,8 @@ namespace DataBlocks.Json
 
     public static readonly Decoder<JsonWrapper, decimal> Decimal = Create(
       (id, json) =>
-        json.Value is JValue v && v.Type == JTokenType.Float
-          ? Result<DecoderError, decimal>.Ok((decimal)v.Value)
+        json.Value is JValue v && (v.Type == JTokenType.Float || v.Type == JTokenType.Integer)
+          ? Result<DecoderError, decimal>.Ok(Convert.ToDecimal(v.Value))
           : Result<DecoderError, decimal>.Error(DecoderError.Single(id, "Expected a decimal value."))
     );
 
@@ -43,13 +43,15 @@ namespace DataBlocks.Json
       (id, json) =>
         json.Value is JValue v && v.Type == JTokenType.Guid
           ? Result<DecoderError, Guid>.Ok((Guid)v.Value)
-          : Result<DecoderError, Guid>.Error(DecoderError.Single(id, "Expected a GUID value."))
+          : json.Value is JValue v2 && v2.Type == JTokenType.String
+            ? Result<DecoderError, Guid>.Ok(new Guid((string)v2.Value))
+            : Result<DecoderError, Guid>.Error(DecoderError.Single(id, "Expected a GUID value."))
     );
 
     public static readonly Decoder<JsonWrapper, int> Int = Create(
       (id, json) =>
         json.Value is JValue v && v.Type == JTokenType.Integer
-          ? Result<DecoderError, int>.Ok((int)v.Value)
+          ? Result<DecoderError, int>.Ok(Convert.ToInt32(v.Value))
           : Result<DecoderError, int>.Error(DecoderError.Single(id, "Expected an integer value."))
     );
 

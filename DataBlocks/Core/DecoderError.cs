@@ -25,6 +25,11 @@ namespace DataBlocks.Core
       return new DecoderError(this.Errors.Concat(b.Errors));
     }
 
+    public override string ToString()
+    {
+      return $"[{string.Join(", ", this.Errors.Select(x => x.ToString()))}]";
+    }
+
     public struct Data
     {
       public Data(string id, string message)
@@ -35,6 +40,11 @@ namespace DataBlocks.Core
 
       public readonly string Id;
       public readonly string Message;
+
+      public override string ToString()
+      {
+        return $"{{id: {this.Id}, message: {this.Message}}}";
+      }
     }
   }
 }

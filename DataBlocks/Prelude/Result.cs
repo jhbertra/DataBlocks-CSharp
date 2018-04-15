@@ -31,6 +31,14 @@ namespace DataBlocks.Prelude
     
     private Either<TError, TResult> _data;
 
+    public override string ToString()
+    {
+      return this._data.Match(
+        error => $"Error ({error.ToString()})",
+        value => $"Ok ({value.ToString()})"
+      );
+    }
+
   }
 
   public static class Result

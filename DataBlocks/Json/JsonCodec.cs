@@ -24,7 +24,7 @@ namespace DataBlocks.Json
       }
       catch (JsonException e)
       {
-        return Result<DecoderError, T>.Error(DecoderError.Single("", e.Message));
+        return Result<DecoderError, T>.Error(DecoderError.Single("", $"Syntax error: {e.Message}"));
       }
     }
 
