@@ -3,7 +3,7 @@ using System;
 namespace DataBlocks
 {
 
-  public static class CodecExtensions
+  public static partial class CodecExtensions
   {
 
     public static Codec<TRaw2, TError, TRich2> Invmap2<TError, TRaw1, TRaw2, TRich1, TRich2>(
@@ -155,33 +155,6 @@ namespace DataBlocks
         codec.Decoder.Map(t => f(t.t1, t.t2)),
         codec.Encoder
       );
-    }
-
-    public static Codec<TRaw, TError, TRich> Construct<TRaw, TError, TRich, T1, T2, T3>(
-      this Codec<TRaw, TError, TRich, ((T1 t1, T2 t2), T3 t3)> codec,
-      Func<T1, T2, T3, TRich> f)
-      where TRaw : struct, IMonoid<TRaw>
-      where TError : struct, IMonoid<TError>
-    {
-      return codec.Construct((t, v) => f(t.t1, t.t2, v));
-    }
-
-    public static Codec<TRaw, TError, TRich> Construct<TRaw, TError, TRich, T1, T2, T3, T4>(
-      this Codec<TRaw, TError, TRich, (((T1 t1, T2 t2), T3 t3), T4 t4)> codec,
-      Func<T1, T2, T3, T4, TRich> f)
-      where TRaw : struct, IMonoid<TRaw>
-      where TError : struct, IMonoid<TError>
-    {
-      return codec.Construct((t, v1, v2) => f(t.t1, t.t2, v1, v2));
-    }
-
-    public static Codec<TRaw, TError, TRich> Construct<TRaw, TError, TRich, T1, T2, T3, T4, T5>(
-      this Codec<TRaw, TError, TRich, ((((T1 t1, T2 t2), T3 t3), T4 t4), T5 t5)> codec,
-      Func<T1, T2, T3, T4, T5, TRich> f)
-      where TRaw : struct, IMonoid<TRaw>
-      where TError : struct, IMonoid<TError>
-    {
-      return codec.Construct((t, v1, v2, v3) => f(t.t1, t.t2, v1, v2, v3));
     }
 
   }
