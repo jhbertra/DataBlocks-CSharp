@@ -7,12 +7,36 @@ using System;
 using DataBlocks.Core;
 using DataBlocks.Json;
 using DataBlocks.Prelude;
+using Newtonsoft.Json;
 
 namespace DataBlocks.Json
 {
 
   public static class JsonCodec
   {
+
+    public static Result<DecoderError, T> DecodeString<T>(this Codec<JsonWrapper, T> codec, string json)
+    {
+      try
+      {
+        var jToken = JToken.Parse(json);
+        return codec.Decode(jToken);
+      }
+      catch (JsonException e)
+      {
+        return Result<DecoderError, T>.Error(DecoderError.Single("", e.Message));
+      }
+    }
+
+    public static string EncodeString<T>(this Codec<JsonWrapper, T> codec, T value)
+    {
+      return codec.Encode(value).Value.ToString();
+    }
+
+    public static string EncodeString<T>(this Codec<JsonWrapper, T> codec, T value, Formatting formatting, params JsonConverter[] converters)
+    {
+      return codec.Encode(value).Value.ToString(formatting, converters);
+    }
 
     public static Codec<JsonWrapper, T> Create<T>(Decoder<JsonWrapper, T> decoder, Encoder<T, JsonWrapper> encoder) =>
       new Codec<JsonWrapper, T>(decoder, encoder);
