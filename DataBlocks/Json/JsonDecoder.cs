@@ -29,45 +29,45 @@ namespace DataBlocks.Json
       (id, json) =>
         json.Value is JValue v && v.Type == JTokenType.Boolean
           ? Result<DecoderError, bool>.Ok((bool)v.Value)
-          : Result<DecoderError, bool>.Error(DecoderError.Single(id, "Expected a boolean value."))
+          : Result<DecoderError, bool>.Error(DecoderError.Single(id, "Expected a boolean value"))
     );
 
     public static readonly Decoder<JsonWrapper, decimal> Decimal = Create(
       (id, json) =>
         json.Value is JValue v && (v.Type == JTokenType.Float || v.Type == JTokenType.Integer)
           ? Result<DecoderError, decimal>.Ok(Convert.ToDecimal(v.Value))
-          : Result<DecoderError, decimal>.Error(DecoderError.Single(id, "Expected a decimal value."))
+          : Result<DecoderError, decimal>.Error(DecoderError.Single(id, "Expected a decimal value"))
     );
 
     public static readonly Decoder<JsonWrapper, Guid> Guid = Create(
       (id, json) =>
         json.Value is JValue v && v.Type == JTokenType.Guid
           ? Result<DecoderError, Guid>.Ok((Guid)v.Value)
-          : json.Value is JValue v2 && v2.Type == JTokenType.String
-            ? Result<DecoderError, Guid>.Ok(new Guid((string)v2.Value))
-            : Result<DecoderError, Guid>.Error(DecoderError.Single(id, "Expected a GUID value."))
+          : json.Value is JValue v2 && v2.Type == JTokenType.String && System.Guid.TryParse((string)v2.Value, out var guid)
+            ? Result<DecoderError, Guid>.Ok(guid)
+            : Result<DecoderError, Guid>.Error(DecoderError.Single(id, "Expected a GUID value"))
     );
 
     public static readonly Decoder<JsonWrapper, int> Int = Create(
       (id, json) =>
         json.Value is JValue v && v.Type == JTokenType.Integer
           ? Result<DecoderError, int>.Ok(Convert.ToInt32(v.Value))
-          : Result<DecoderError, int>.Error(DecoderError.Single(id, "Expected an integer value."))
+          : Result<DecoderError, int>.Error(DecoderError.Single(id, "Expected an integer value"))
     );
 
     public static readonly Decoder<JsonWrapper, string> String = Create(
       (id, json) =>
         json.Value is JValue v && v.Type == JTokenType.String
           ? Result<DecoderError, string>.Ok((string)v.Value)
-          : Result<DecoderError, string>.Error(DecoderError.Single(id, "Expected as string value."))
+          : Result<DecoderError, string>.Error(DecoderError.Single(id, "Expected a string value"))
     );
 
-    public static Decoder<JsonWrapper, Maybe<T>> Nullable<T>(this Decoder<JsonWrapper, T> valueDecoder) => 
+    public static Decoder<JsonWrapper, Maybe<T>> Nullable<T>(Decoder<JsonWrapper, T> valueDecoder) => 
       Create(
         (id, json) =>
-          json.Value == null
-            ? valueDecoder.Run(id, json).Map(Maybe<T>.Some)
-            : Result<DecoderError, Maybe<T>>.Ok(Maybe<T>.None)
+          json.Value.Type == JTokenType.Null
+            ? Result<DecoderError, Maybe<T>>.Ok(Maybe<T>.None)
+            : valueDecoder.Run(id, json).Map(Maybe<T>.Some)
       );
 
     public static Decoder<JsonWrapper, IEnumerable<T>> Array<T>(Decoder<JsonWrapper, T> elementDecoder) => 
@@ -78,7 +78,7 @@ namespace DataBlocks.Json
             .Values()
             .Select((element, i) => elementDecoder.Run($"{id}[{i}]", element))
             .Sequence()
-          : Result<DecoderError, IEnumerable<T>>.Error(DecoderError.Single(id, "Expected an array."))
+          : Result<DecoderError, IEnumerable<T>>.Error(DecoderError.Single(id, "Expected an array"))
       );
 
     public static Decoder<JsonWrapper, Unit> Object<T>() => Succeed(Unit.Default);
@@ -86,21 +86,27 @@ namespace DataBlocks.Json
     private static Decoder<JsonWrapper, T> Required<T>(string fieldName, Decoder<JsonWrapper, T> fieldDecoder) =>
       Create(
         (id, json) =>
-        json.Value is JObject obj
-          ? obj.ContainsKey(fieldName)
-            ? fieldDecoder.Run($"{id}.{fieldName}", obj.Property(fieldName).Value)
-            : Result<DecoderError, T>.Error(DecoderError.Single($"{id}.{fieldName}", "Value is required."))
-          : Result<DecoderError, T>.Error(DecoderError.Single(id, "Expected an object."))
+        {
+          var fieldPath = id == string.Empty ? fieldName : $"{id}.{fieldName}";
+          return json.Value is JObject obj
+            ? obj.ContainsKey(fieldName)
+              ? fieldDecoder.Run(fieldPath, obj.Property(fieldName).Value)
+              : Result<DecoderError, T>.Error(DecoderError.Single(fieldPath, "Value is required"))
+            : Result<DecoderError, T>.Error(DecoderError.Single(id, "Expected an object"));
+        }
       );
 
     private static Decoder<JsonWrapper, Maybe<T>> Optional<T>(string fieldName, Decoder<JsonWrapper, T> decoder) =>
       Create(
         (id, json) =>
-        json.Value is JObject obj
-          ? obj.ContainsKey(fieldName)
-            ? Nullable(decoder).Run($"{id}.{fieldName}", obj.Property(fieldName).Value)
-            : Result<DecoderError, Maybe<T>>.Ok(Maybe<T>.None)
-          : Result<DecoderError, Maybe<T>>.Error(DecoderError.Single(id, "Expected an object."))
+        {
+          var fieldPath = id == string.Empty ? fieldName : $"{id}.{fieldName}";
+          return json.Value is JObject obj
+            ? obj.ContainsKey(fieldName)
+              ? Nullable(decoder).Run(fieldPath, obj.Property(fieldName).Value)
+              : Result<DecoderError, Maybe<T>>.Ok(Maybe<T>.None)
+            : Result<DecoderError, Maybe<T>>.Error(DecoderError.Single(id, "Expected an object"));
+        }
       );
 
     public static Decoder<JsonWrapper, T> Required<T>(

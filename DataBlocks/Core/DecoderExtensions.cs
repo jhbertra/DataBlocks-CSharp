@@ -58,6 +58,18 @@ namespace DataBlocks.Core
       return new Decoder<TRaw, (TRich1, TRich2)>("", (id, x) => decoder1.Run(id, x).Plus(decoder2.Run(id, x)));
     }
 
+    public static Decoder<TRaw, TRich> Or<TRaw, TRich>(
+        this Decoder<TRaw, TRich> decoder1,
+        Decoder<TRaw, TRich> decoder2)
+      where TRaw : struct, IMonoid<TRaw>
+    {
+      return new Decoder<TRaw, TRich>("", (id, x) => 
+        decoder1.Run(id, x).Match(
+          v1 => Result<DecoderError, TRich>.Ok(v1),
+          _ => decoder2.Run(id, x))
+      );
+    }
+
     public static Decoder<TRaw, TRich> Compose<TRaw, TIntermediate, TRich>(
         this Decoder<TRaw, TIntermediate> left,
         Decoder<TIntermediate, TRich> right)

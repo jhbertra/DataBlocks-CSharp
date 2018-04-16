@@ -38,30 +38,4 @@ namespace DataBlocks.Core
 
   }
 
-  public static class Decoder
-  {
-
-    public static Decoder<TRaw, TRich> Choose<TRaw, TRich>(params Decoder<TRaw, TRich>[] decoders)
-      where TRaw : struct, IMonoid<TRaw>
-    {
-      return new Decoder<TRaw, TRich>(
-        "",
-        (id, x) =>
-        {
-          var last = Result<DecoderError, TRich>.Zero;
-          foreach (var result in decoders.Select(d => d.Run(id, x)))
-          {
-            if (result.IsOk)
-            {
-              return result;
-            }
-            last = result;
-          }
-          return last;
-        }
-      );
-    }
-
-  }
-
 }

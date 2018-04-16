@@ -37,6 +37,36 @@ namespace DataBlocks.Prelude
         : throw new InvalidOperationException("This either struct has not been initialized.");
     }
 
+    public override bool Equals(object obj)
+    {
+      return obj is Either<T1, T2> other && this == other;
+    }
+
+    public static bool operator ==(Either<T1, T2> a, Either<T1, T2> b)
+    {
+      return a.Match(
+        v1 => b.Match(
+          v2 => v1.Equals(v2),
+          _ => false),
+        v1 => b.Match(
+          _ => false,
+          v2 => v1.Equals(v2))
+      );
+    }
+
+    public static bool operator !=(Either<T1, T2> a, Either<T1, T2> b)
+    {
+      return !(a == b);
+    }
+
+    public override string ToString()
+    {
+      return this.Match(
+        t1 => $"Case1 ({t1})",
+        t2 => $"Case2 ({t2})"
+      );
+    }
+
     private readonly bool _isInitialized;
     private readonly bool _isCase1;
     private readonly T1 _value1;

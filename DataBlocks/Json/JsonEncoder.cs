@@ -19,13 +19,13 @@ namespace DataBlocks.Json
     public static readonly Encoder<decimal, JsonWrapper> Decimal = Create<decimal>(v => new JValue(v));
     public static readonly Encoder<Guid, JsonWrapper> Guid = Create<Guid>(v => new JValue(v));
     public static readonly Encoder<int, JsonWrapper> Int = Create<int>(v => new JValue(v));
-    public static readonly Encoder<string, JsonWrapper> String = Create<string>(v => new JValue(v));
+    public static readonly Encoder<string, JsonWrapper> String = Create<string>(v => JValue.CreateString(v));
 
-    public static Encoder<Maybe<T>, JsonWrapper> Nullable<T>(this Encoder<T, JsonWrapper> valueEncoder) =>
+    public static Encoder<Maybe<T>, JsonWrapper> Nullable<T>(Encoder<T, JsonWrapper> valueEncoder) =>
       Create<Maybe<T>>(v => v.Match(valueEncoder.Run, () => JValue.CreateNull()));
 
     public static Encoder<IEnumerable<T>, JsonWrapper> Array<T>(Encoder<T, JsonWrapper> elementEncoder) =>
-      Create<IEnumerable<T>>(v => new JArray(v.Select(x => elementEncoder.Run)));
+      Create<IEnumerable<T>>(v => new JArray(v.Select(x => elementEncoder.Run(x).Value)));
 
     public static Encoder<T, JsonWrapper> Switch<T>() => Encoder<T, JsonWrapper>.Zero;
 

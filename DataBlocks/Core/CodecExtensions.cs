@@ -88,6 +88,18 @@ namespace DataBlocks.Core
       );
     }
 
+    public static Codec<TRaw, TRich2> EpimapRichStringError<TRaw, TRich1, TRich2>(
+        this Codec<TRaw, TRich1> codec,
+        Func<TRich1, Result<ValueString, TRich2>> f,
+        Func<TRich2, TRich1> g)
+      where TRaw : struct, IMonoid<TRaw>
+    {
+      return new Codec<TRaw, TRich2>(
+        new Decoder<TRaw, TRich2>("", (id, x) => codec.Decoder.Run(id, x).Bind(y => f(y).MapError(msg => DecoderError.Single(id, msg)))),
+        codec.Encoder.Contramap(g)
+      );
+    }
+
     public static Codec<TRaw, TRich> Compose<TRaw, TIntermediate, TRich>(
         this Codec<TRaw, TIntermediate> codec1,
         Codec<TIntermediate, TRich> codec2)
@@ -132,8 +144,19 @@ namespace DataBlocks.Core
       where TRaw : struct, IMonoid<TRaw>
     {
       return new Codec<TRaw, TRich>(
-        Decoder.Choose(caseCodec.Decoder.Map(wrap), codec.Decoder),
+        codec.Decoder.Or(caseCodec.Decoder.Map(wrap)),
         codec.Encoder.Case(getter, caseCodec.Encoder)
+      );
+    }
+
+    public static Codec<TRaw, TRich> Construct<TRaw, TRich, T1>(
+      this Codec<TRaw, TRich, T1> codec,
+      Func<T1, TRich> f)
+      where TRaw : struct, IMonoid<TRaw>
+    {
+      return new Codec<TRaw, TRich>(
+        codec.Decoder.Map(t => f(t)),
+        codec.Encoder
       );
     }
 

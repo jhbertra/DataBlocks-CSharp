@@ -30,7 +30,7 @@ namespace DataBlocks.Json
 
     public static string EncodeString<T>(this Codec<JsonWrapper, T> codec, T value)
     {
-      return codec.Encode(value).Value.ToString();
+      return codec.EncodeString(value, Formatting.Indented);
     }
 
     public static string EncodeString<T>(this Codec<JsonWrapper, T> codec, T value, Formatting formatting, params JsonConverter[] converters)
@@ -53,8 +53,8 @@ namespace DataBlocks.Json
     public static readonly Codec<JsonWrapper, int> Int = Create(JsonDecoder.Int, JsonEncoder.Int);
     public static readonly Codec<JsonWrapper, string> String = Create(JsonDecoder.String, JsonEncoder.String);
     
-    public static Codec<JsonWrapper, Maybe<T>> Nullable<T>(this Codec<JsonWrapper, T> valueCodec) => 
-      Create(valueCodec.Decoder.Nullable(), valueCodec.Encoder.Nullable());
+    public static Codec<JsonWrapper, Maybe<T>> Nullable<T>(Codec<JsonWrapper, T> valueCodec) => 
+      Create(JsonDecoder.Nullable(valueCodec.Decoder), JsonEncoder.Nullable(valueCodec.Encoder));
 
     public static Codec<JsonWrapper, IEnumerable<T>> Array<T>(Codec<JsonWrapper, T> elementCodec) => 
       Create(JsonDecoder.Array(elementCodec.Decoder), JsonEncoder.Array(elementCodec.Encoder));
@@ -88,7 +88,7 @@ namespace DataBlocks.Json
         Codec<JsonWrapper, TProp> fieldCodec) =>
       CreateFree(
         codec.Decoder.Optional(fieldName, fieldCodec.Decoder),
-        codec.Encoder.Property(fieldName, getter, fieldCodec.Encoder.Nullable())
+        codec.Encoder.Property(fieldName, getter, JsonEncoder.Nullable(fieldCodec.Encoder))
       );
 
     public static Codec<JsonWrapper, TObject, (TPrev, Maybe<TProp>)> Optional<TObject, TPrev, TProp>(
@@ -98,7 +98,7 @@ namespace DataBlocks.Json
         Codec<JsonWrapper, TProp> fieldCodec) =>
       CreateFree(
         codec.Decoder.Optional(fieldName, fieldCodec.Decoder),
-        codec.Encoder.Property(fieldName, getter, fieldCodec.Encoder.Nullable())
+        codec.Encoder.Property(fieldName, getter, JsonEncoder.Nullable(fieldCodec.Encoder))
       );
 
     public static Codec<JsonWrapper, T> Switch<T>() => Codec.Switch<JsonWrapper, T>();
