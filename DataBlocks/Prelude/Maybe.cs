@@ -54,6 +54,11 @@ namespace DataBlocks.Prelude
       );
     }
 
+    public override int GetHashCode()
+    {
+      return this._data.GetHashCode();
+    }
+
     private readonly Either<object, T> _data;
 
   }

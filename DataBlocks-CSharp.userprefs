@@ -1,0 +1,18 @@
+﻿<Properties StartupConfiguration="{34CCE2D7-E66B-44FF-8C87-E81D286710A5}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="DataBlocks/Prelude/Either.cs">
+    <Files>
+      <File FileName="DataBlocks/Core/Codec.cs" Line="1" Column="1" />
+      <File FileName="DataBlocks/Core/CodecExtensions.cs" Line="1" Column="1" />
+      <File FileName="DataBlocks/Prelude/Duple.cs" Line="1" Column="1" />
+      <File FileName="DataBlocks/Prelude/Either.cs" Line="75" Column="5" />
+      <File FileName="DataBlocks/Json/JsonDecoder.cs" Line="113" Column="41" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.ItemProperties.DataBlocks.Test PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+</Properties>

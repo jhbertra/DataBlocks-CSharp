@@ -115,7 +115,7 @@ namespace DataBlocks.Json
         Decoder<JsonWrapper, T> fieldDecoder) =>
       Required(fieldName, fieldDecoder);
 
-    public static Decoder<JsonWrapper, (T1, T2)> Required<T1, T2>(
+    public static Decoder<JsonWrapper, Duple<T1, T2>> Required<T1, T2>(
         this Decoder<JsonWrapper, T1> decoder,
         string fieldName,
         Decoder<JsonWrapper, T2> fieldDecoder) =>
@@ -127,7 +127,7 @@ namespace DataBlocks.Json
         Decoder<JsonWrapper, T> fieldDecoder) =>
       Optional(fieldName, fieldDecoder);
 
-    public static Decoder<JsonWrapper, (T1, Maybe<T2>)> Optional<T1, T2>(
+    public static Decoder<JsonWrapper, Duple<T1, Maybe<T2>>> Optional<T1, T2>(
         this Decoder<JsonWrapper, T1> decoder,
         string fieldName,
         Decoder<JsonWrapper, T2> fieldDecoder) =>

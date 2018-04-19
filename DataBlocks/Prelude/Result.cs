@@ -39,6 +39,11 @@ namespace DataBlocks.Prelude
       );
     }
 
+    public override int GetHashCode()
+    {
+      return this._data.GetHashCode();
+    }
+
   }
 
   public static class Result

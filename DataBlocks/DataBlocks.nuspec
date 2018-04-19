@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>DataBlocks.CSharp</id>
+    <version>1.0.0</version>
+    <title>DataBlocks for C#</title>
+    <authors>Jamie Bertram</authors>
+    <owners>Jamie Bertram</owners>
+    <licenseUrl>https://github.com/jhbertra/DataBlocks-CSharp/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/jhbertra/DataBlocks-CSharp</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Functions that transform data.</description>
+    <releaseNotes>This is the initial release</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>Data Functional JSON</tags>
+  </metadata>
+</package>

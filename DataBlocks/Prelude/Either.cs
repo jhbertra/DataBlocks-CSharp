@@ -42,6 +42,11 @@ namespace DataBlocks.Prelude
       return obj is Either<T1, T2> other && this == other;
     }
 
+    public override int GetHashCode()
+    {
+      return this._isCase1.GetHashCode() ^ this._value1.GetHashCode() ^ this._value2.GetHashCode();
+    }
+
     public static bool operator ==(Either<T1, T2> a, Either<T1, T2> b)
     {
       return a.Match(

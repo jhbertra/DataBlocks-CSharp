@@ -71,7 +71,7 @@ namespace DataBlocks.Json
         codec.Encoder.Property(fieldName, getter, fieldCodec.Encoder)
       );
 
-    public static Codec<JsonWrapper, TObject, (TPrev, TProp)> Required<TObject, TPrev, TProp>(
+    public static Codec<JsonWrapper, TObject, Duple<TPrev, TProp>> Required<TObject, TPrev, TProp>(
         this Codec<JsonWrapper, TObject, TPrev> codec,
         string fieldName,
         Func<TObject, TProp> getter,
@@ -91,7 +91,7 @@ namespace DataBlocks.Json
         codec.Encoder.Property(fieldName, getter, JsonEncoder.Nullable(fieldCodec.Encoder))
       );
 
-    public static Codec<JsonWrapper, TObject, (TPrev, Maybe<TProp>)> Optional<TObject, TPrev, TProp>(
+    public static Codec<JsonWrapper, TObject, Duple<TPrev, Maybe<TProp>>> Optional<TObject, TPrev, TProp>(
         this Codec<JsonWrapper, TObject, TPrev> codec,
         string fieldName,
         Func<TObject, Maybe<TProp>> getter,

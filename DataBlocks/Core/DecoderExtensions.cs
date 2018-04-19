@@ -50,12 +50,12 @@ namespace DataBlocks.Core
       );
     }
 
-    public static Decoder<TRaw, (TRich1, TRich2)> Plus<TRaw, TRich1, TRich2>(
+    public static Decoder<TRaw, Duple<TRich1, TRich2>> Plus<TRaw, TRich1, TRich2>(
         this Decoder<TRaw, TRich1> decoder1,
         Decoder<TRaw, TRich2> decoder2)
       where TRaw : struct, IMonoid<TRaw>
     {
-      return new Decoder<TRaw, (TRich1, TRich2)>("", (id, x) => decoder1.Run(id, x).Plus(decoder2.Run(id, x)));
+      return new Decoder<TRaw, Duple<TRich1, TRich2>>("", (id, x) => decoder1.Run(id, x).Plus(decoder2.Run(id, x)));
     }
 
     public static Decoder<TRaw, TRich> Or<TRaw, TRich>(

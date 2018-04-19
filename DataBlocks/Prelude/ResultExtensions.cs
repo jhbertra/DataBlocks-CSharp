@@ -58,16 +58,16 @@ namespace DataBlocks.Prelude
       return x => f(x).Bind(g);
     }
 
-    public static Result<TError, (T1, T2)> Plus<TError, T1, T2>(this Result<TError, T1> result1, Result<TError, T2> result2)
+    public static Result<TError, Duple<T1, T2>> Plus<TError, T1, T2>(this Result<TError, T1> result1, Result<TError, T2> result2)
        where TError : struct, IMonoid<TError>
     {
       return result1.Match(
         v1 => result2.Match(
-          v2 => Result<TError, (T1, T2)>.Ok((v1, v2)),
-          Result<TError, (T1, T2)>.Error),
+          v2 => Result<TError, Duple<T1, T2>>.Ok(Duple.Create(v1, v2)),
+          Result<TError, Duple<T1, T2>>.Error),
         e1 => result2.Match(
-          _ => Result<TError, (T1, T2)>.Error(e1),
-          e2 => Result<TError,(T1, T2)>.Error(e1.Append(e2)))
+          _ => Result<TError, Duple<T1, T2>>.Error(e1),
+          e2 => Result<TError,Duple<T1, T2>>.Error(e1.Append(e2)))
       );
     }
 

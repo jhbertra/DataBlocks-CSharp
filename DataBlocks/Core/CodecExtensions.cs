@@ -124,13 +124,13 @@ namespace DataBlocks.Core
       );
     }
 
-    public static Codec<TRaw, TWhole, (TPrevious, TPart)> Part<TWhole, TRaw, TPrevious, TPart>(
+    public static Codec<TRaw, TWhole, Duple<TPrevious, TPart>> Part<TWhole, TRaw, TPrevious, TPart>(
         this Codec<TRaw, TWhole, TPrevious> codec,
         Func<TWhole, TPart> getter,
         Codec<TRaw, TPart> partCodec)
       where TRaw : struct, IMonoid<TRaw>
     {
-      return new Codec<TRaw, TWhole, (TPrevious, TPart)>(
+      return new Codec<TRaw, TWhole, Duple<TPrevious, TPart>>(
         codec.Decoder.Plus(partCodec.Decoder),
         codec.Encoder.Part(getter, partCodec.Encoder)
       );
@@ -161,12 +161,12 @@ namespace DataBlocks.Core
     }
 
     public static Codec<TRaw, TRich> Construct<TRaw, TRich, T1, T2>(
-      this Codec<TRaw, TRich, (T1 t1, T2 t2)> codec,
+      this Codec<TRaw, TRich, Duple<T1, T2>> codec,
       Func<T1, T2, TRich> f)
       where TRaw : struct, IMonoid<TRaw>
     {
       return new Codec<TRaw, TRich>(
-        codec.Decoder.Map(t => f(t.t1, t.t2)),
+        codec.Decoder.Map(t => f(t._1, t._2)),
         codec.Encoder
       );
     }
