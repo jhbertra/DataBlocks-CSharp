@@ -2,9 +2,21 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>DataBlocks.CSharp</PackageId>
+    <PackageVersion>1.0.1</PackageVersion>
+    <Authors>Jamie Bertram</Authors>
+    <PackageLicenseUrl>https://github.com/jhbertra/DataBlocks-CSharp/blob/master/LICENSE.md</PackageLicenseUrl>
+    <Owners>Jamie Bertram</Owners>
+    <PackageProjectUrl>https://github.com/jhbertra/DataBlocks-CSharp</PackageProjectUrl>
+    <Title>DataBlocks for C#</Title>
+    <Description>Functions that transform data.</Description>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="DataBlocks.CSharp.1.0.0.nupkg" />
   </ItemGroup>
 </Project>
