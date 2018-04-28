@@ -1,64 +1,67 @@
 using System;
 
 using DataBlocks.Prelude;
+using JetBrains.Annotations;
+using LanguageExt;
+using LanguageExt.TypeClasses;
 
 namespace DataBlocks.Core
 {
 
-  public class Encoder<TRich, TRaw>
-    where TRaw : struct, IMonoid<TRaw>
-  {
-
-    public static Encoder<TRich, TRaw> Zero => new Encoder<TRich, TRaw>(_ => default(TRaw).Zero);
-
-    public Encoder(Func<TRich, TRaw> run)
+    public struct Encoder<TRaw, T>
     {
-      this.Run = run;
+
+        public Encoder([NotNull] Func<T, TRaw> encode)
+        {
+            if (encode == null) throw new ArgumentNullException(nameof(encode));
+            this.Encode = encode;
+        }
+
+        [NotNull] public readonly Func<T, TRaw> Encode;
+
     }
 
-    public readonly Func<TRich, TRaw> Run;
-
-  }
-
-  public static class Encoder
-  {
-
-    public static Encoder<TWhole, TRaw> Build<TWhole, TRaw>()
-      where TRaw : struct, IMonoid<TRaw>
+    public static class Encoder
     {
-      return Encoder<TWhole, TRaw>.Zero;
-    }
 
-    public static Encoder<TWhole, TRaw> Divide<TWhole, TRaw, TPart1, TPart2>(
-        Func<TWhole, (TPart1, TPart2)> divide,
-        Encoder<TPart1, TRaw> part1Encoder,
-        Encoder<TPart2, TRaw> part2Encoder)
-      where TRaw : struct, IMonoid<TRaw>
-    {
-      return new Encoder<TWhole, TRaw>(
-        divide
-        .ComposeRight(Function.Split(part1Encoder.Run, part2Encoder.Run)
-        .ComposeRight(t => t.Item1.Append(t.Item2)))
-      );
-    }
+        public static Encoder<TRaw, T> Divide<MonoidRaw, TRaw, T, T1, T2>(
+            [NotNull] Func<T, Pair<T1, T2>> divide,
+            Encoder<TRaw, T1> a,
+            Encoder<TRaw, T2> b) where MonoidRaw : struct, Monoid<TRaw>
+        {
+            if (divide == null) throw new ArgumentNullException(nameof(divide));
 
-    public static Encoder<TWhole, TRaw> Switch<TWhole, TRaw>()
-      where TRaw : struct, IMonoid<TRaw>
-    {
-      return Encoder<TWhole, TRaw>.Zero;
-    }
+            return new Encoder<TRaw, T>(
+                data =>
+                {
+                    var pair = divide(data);
+                    return default(MonoidRaw).Append(a.Encode(pair._1), b.Encode(pair._2));
+                }
+            );
+        }
 
-    public static Encoder<TWhole, TRaw> Choose<TWhole, TRaw, TChoice1, TChoice2>(
-        Func<TWhole, Either<TChoice1, TChoice2>> alternate,
-        Encoder<TChoice1, TRaw> choice1Encoder,
-        Encoder<TChoice2, TRaw> choice2Encoder)
-      where TRaw : struct, IMonoid<TRaw>
-    {
-      return new Encoder<TWhole, TRaw>(
-        alternate.ComposeRight(Function.FanIn(choice1Encoder.Run, choice2Encoder.Run))
-      );
-    }
+        public static Encoder<TRaw, T> Conquer<MonoidRaw, TRaw, T>() where MonoidRaw : struct, Monoid<TRaw>
+        {
+            return new Encoder<TRaw, T>(_ => default(MonoidRaw).Empty());
+        }
 
-  }
+        public static Encoder<TRaw, T> Choose<TRaw, T, T1, T2>(
+            [NotNull] Func<T, Either<T1, T2>> toEither,
+            Encoder<TRaw, T1> a,
+            Encoder<TRaw, T2> b)
+        {
+            if (toEither == null) throw new ArgumentNullException(nameof(toEither));
+
+            return new Encoder<TRaw, T>(t => toEither(t).Match(b.Encode, a.Encode));
+        }
+
+        public static Encoder<TRaw, T> Lose<TRaw, T>([NotNull] Func<T, Void> f)
+        {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+
+            return new Encoder<TRaw, T>(t => Void.Absurd<TRaw>(f(t)));
+        }
+
+    }
 
 }

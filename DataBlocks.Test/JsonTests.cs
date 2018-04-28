@@ -12,7 +12,9 @@ using DataBlocks.Prelude;
 
 namespace DataBlocks.Test
 {
-  using static DataBlocks.Json.JsonCodec;
+    using LanguageExt;
+    using Newtonsoft.Json.Linq;
+    using static DataBlocks.Json.JsonCodec;
 
   public class JsonTests
   {
@@ -188,7 +190,7 @@ namespace DataBlocks.Test
     [InlineData("\"test\"", "test")]
     public void Nullable_Encodes(string expected, string input)
     {
-      Assert.Equal(expected, Nullable(String).EncodeString(input == null ? Maybe<string>.None : Maybe<string>.Some(input)));
+      Assert.Equal(expected, Nullable(String).EncodeString(input == null ? Option<string>.None : Option<string>.Some(input)));
     }
 
     [Fact]
@@ -249,25 +251,25 @@ namespace DataBlocks.Test
           );
     }
 
-    private static readonly Codec<JsonWrapper, Natural> NaturalCodec = Int.EpimapRichStringError(Natural.Create, x => x.Value);
+    private static readonly Codec<JToken, Natural> NaturalCodec = Int.ChainValidation(Natural.Create, x => x.Value);
 
-    private static readonly Codec<JsonWrapper, ChildFieldType> ChildFieldTypeCodec =
+    private static readonly Codec<JToken, ChildFieldType> ChildFieldTypeCodec =
         Switch<ChildFieldType>()
             .Case(x => x.Int, ChildFieldType.Case1, Int)
             .Case(x => x.Str, ChildFieldType.Case2, String);
 
-    private static readonly Codec<JsonWrapper, SuperAdvancedOptions> SuperAdvancedOptionsCodec =
+    private static readonly Codec<JToken, SuperAdvancedOptions> SuperAdvancedOptionsCodec =
         Object<SuperAdvancedOptions>()
             .Required("childField", x => x.ChildField, ChildFieldTypeCodec)
             .Construct(SuperAdvancedOptions.Create);
 
-    private static readonly Codec<JsonWrapper, AdvancedOptions> AdvancedOptionsCodec =
+    private static readonly Codec<JToken, AdvancedOptions> AdvancedOptionsCodec =
         Object<AdvancedOptions>()
             .Required("allowNonsecure", x => x.AllowNonsecure, Bool)
             .Required("superAdvanced", x => x.SuperAdvanced, SuperAdvancedOptionsCodec)
             .Construct(AdvancedOptions.Create);
 
-    private static readonly Codec<JsonWrapper, ImaginationConfig> ImaginationConfigCodec =
+    private static readonly Codec<JToken, ImaginationConfig> ImaginationConfigCodec =
         Object<ImaginationConfig>()
             .Required("url", x => x.Url, String)
             .Required("connectionLimit", x => x.ConnectionLimit, NaturalCodec)
@@ -299,7 +301,7 @@ namespace DataBlocks.Test
             "http://www.google.com",
             Natural.Create(1).Match(x => x, _ => null),
             new[] { "url1" },
-            Maybe<string>.Some("asdf@test.com"),
+            Option<string>.Some("asdf@test.com"),
             AdvancedOptions.Create(
                 false,
                 SuperAdvancedOptions.Create(
@@ -325,16 +327,16 @@ namespace DataBlocks.Test
                 }
             }")
             .Match(
-                v => default(DecoderError).Zero,
+                v => DecoderErrors.Zero,
                 e => e
             );
 
         var expected = 
-          DecoderError.Single("url", "Expected a string value")
-            .Append(DecoderError.Single("connectionLimit", "Value must be positive"))
-            .Append(DecoderError.Single("trustedUrls", "Value is required"))
-            .Append(DecoderError.Single("email", "Expected a string value"))
-            .Append(DecoderError.Single("advanced.superAdvanced.childField", "Expected a string value"));
+          DecoderErrors.Single("url", "Expected a string value")
+            .Append(DecoderErrors.Single("connectionLimit", "Value must be positive"))
+            .Append(DecoderErrors.Single("trustedUrls", "Value is required"))
+            .Append(DecoderErrors.Single("email", "Expected a string value"))
+            .Append(DecoderErrors.Single("advanced.superAdvanced.childField", "Expected a string value"));
 
         Assert.Equal(expected, actual);
     }
@@ -347,7 +349,7 @@ namespace DataBlocks.Test
                 "http://www.google.com",
                 Natural.Create(1).Match(x => x, _ => null),
                 new[] { "url1" },
-                Maybe<string>.Some("asdf@test.com"),
+                Option<string>.Some("asdf@test.com"),
                 AdvancedOptions.Create(
                     false,
                     SuperAdvancedOptions.Create(

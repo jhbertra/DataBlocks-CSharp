@@ -2,97 +2,91 @@ using System;
 using System.Linq;
 
 using DataBlocks.Prelude;
+using LanguageExt;
 
 namespace DataBlocks.Core
 {
 
-  public static class DecoderExtensions
-  {
-
-    public static Decoder<TRaw2, TRich2> Dimap<TRaw1, TRich1, TRaw2, TRich2>(
-        this Decoder<TRaw1, TRich1> decoder,
-        Func<TRaw2, TRaw1> f,
-        Func<TRich1, TRich2> g)
-      where TRaw1 : struct, IMonoid<TRaw1>
-      where TRaw2 : struct, IMonoid<TRaw2>
+    public static class DecoderExtensions
     {
-      return new Decoder<TRaw2, TRich2>("", (id, x) => decoder.Run(id, f(x)).Map(g));
-    }
 
-    public static Decoder<TRaw, TRich2> Map<TRaw, TRich1, TRich2>(
-        this Decoder<TRaw, TRich1> decoder,
-        Func<TRich1, TRich2> f)
-      where TRaw : struct, IMonoid<TRaw>
-    {
-      return decoder.Dimap<TRaw, TRich1, TRaw, TRich2>(x => x, f);
-    }
+        public static Decoder<TRaw2, T2> Dimap<TRaw1, T1, TRaw2, T2>(
+            this Decoder<TRaw1, T1> decoder,
+            Func<TRaw2, TRaw1> f,
+            Func<T1, T2> g)
+        {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            if (g == null) throw new ArgumentNullException(nameof(g));
 
-    public static Decoder<TRaw2, TRich> Contramap<TRaw1, TRich, TRaw2>(
-        this Decoder<TRaw1, TRich> decoder,
-        Func<TRaw2, TRaw1> f)
-      where TRaw1 : struct, IMonoid<TRaw1>
-      where TRaw2 : struct, IMonoid<TRaw2>
-    {
-      return decoder.Dimap(f, x => x);
-    }
+            return new Decoder<TRaw2, T2>((id, x) => decoder.Run(id, f(x)).Map(g), decoder.Id);
+        }
 
-    public static Decoder<TRaw, TRich2> Bind<TRaw, TRich1, TRich2>(
-        this Decoder<TRaw, TRich1> decoder,
-        Func<TRich1, Decoder<TRaw, TRich2>> f)
-      where TRaw : struct, IMonoid<TRaw>
-    {
-      return new Decoder<TRaw, TRich2>(
-        "",
-        (id, x) =>
-          from result1 in decoder.Run(id, x)
-          from result2 in f(result1).Run(id, x)
-          select result2
-      );
-    }
+        public static Decoder<TRaw, T2> Map<TRaw, T1, T2>(
+            this Decoder<TRaw, T1> decoder,
+            Func<T1, T2> f)
+        {     
+            return decoder.Dimap<TRaw, T1, TRaw, T2>(x => x, f);
+        }
 
-    public static Decoder<TRaw, Duple<TRich1, TRich2>> Plus<TRaw, TRich1, TRich2>(
-        this Decoder<TRaw, TRich1> decoder1,
-        Decoder<TRaw, TRich2> decoder2)
-      where TRaw : struct, IMonoid<TRaw>
-    {
-      return new Decoder<TRaw, Duple<TRich1, TRich2>>("", (id, x) => decoder1.Run(id, x).Plus(decoder2.Run(id, x)));
-    }
+        public static Decoder<TRaw2, T> Contramap<TRaw1, T, TRaw2>(
+            this Decoder<TRaw1, T> decoder,
+            Func<TRaw2, TRaw1> f)
+        {
+            return decoder.Dimap(f, x => x);
+        }
 
-    public static Decoder<TRaw, TRich> Or<TRaw, TRich>(
-        this Decoder<TRaw, TRich> decoder1,
-        Decoder<TRaw, TRich> decoder2)
-      where TRaw : struct, IMonoid<TRaw>
-    {
-      return new Decoder<TRaw, TRich>("", (id, x) => 
-        decoder1.Run(id, x).Match(
-          v1 => Result<DecoderError, TRich>.Ok(v1),
-          _ => decoder2.Run(id, x))
-      );
-    }
+        public static Decoder<TRaw, T2> Bind<TRaw, T1, T2>(
+            this Decoder<TRaw, T1> decoder,
+            Func<T1, Either<string, T2>> f)
+        {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
+            return new Decoder<TRaw, T2>(
+                (id, x) =>
+                    from result1 in decoder.Run(id, x)
+                    from result2 in f(result1).MapLeft(msg => DecoderErrors.Single(id, msg))
+                    select result2,
+                decoder.Id);
+        }
 
-    public static Decoder<TRaw, TRich> Compose<TRaw, TIntermediate, TRich>(
-        this Decoder<TRaw, TIntermediate> left,
-        Decoder<TIntermediate, TRich> right)
-      where TRaw : struct, IMonoid<TRaw>
-      where TIntermediate : struct, IMonoid<TIntermediate>
-    {
-      return new Decoder<TRaw, TRich>(
-        "",
-        (id, x) =>
-          from intermediate in left.Run(id, x)
-          from rich in right.Run(id, intermediate)
-          select rich
-      );
-    }
+        public static Decoder<TRaw, Pair<T1, T2>> Combine<TRaw, T1, T2>(
+            this Decoder<TRaw, T1> decoder1,
+            Decoder<TRaw, T2> decoder2)
+        {
+            return new Decoder<TRaw, Pair<T1, T2>>(
+                (id, x) => 
+                    decoder1.Run(id, x).Match(
+                        v1 => decoder2.Run(id, x).Map(v2 => Pair.Create(v1, v2)),
+                        e1 => decoder2.Run(id, x).Match(
+                            _ => e1,
+                            e2 => e1.Append(e2))));
+        }
 
-    public static Decoder<TRaw, TRich> Construct<TRaw, TPart1, TPart2, TRich>(
-        this Decoder<TRaw, (TPart1, TPart2)> decoder,
-        Func<TPart1, TPart2, TRich> f)
-      where TRaw : struct, IMonoid<TRaw>
-    {
-      return decoder.Map(t => f(t.Item1, t.Item2));
-    }
+        public static Decoder<TRaw, T> Or<TRaw, T>(
+            this Decoder<TRaw, T> decoder1,
+            Decoder<TRaw, T> decoder2)
+        {
+            return new Decoder<TRaw, T>((id, x) => decoder1.Run(id, x) || decoder2.Run(id, x));
+        }
 
-  }
+        public static Decoder<TRaw, T> Compose<TRaw, TIntermediate, T>(
+            this Decoder<TRaw, TIntermediate> left,
+            Decoder<TIntermediate, T> right)
+        {
+            return new Decoder<TRaw, T>(
+                (id, x) =>
+                    from intermediate in left.Run(id, x)
+                    from rich in right.Run(id, intermediate)
+                    select rich);
+        }
+
+        public static Decoder<TRaw, T> Construct<TRaw, T1, T2, T>(
+            this Decoder<TRaw, Pair<T1, T2>> decoder,
+            Func<T1, T2, T> f)
+        {
+            return decoder.Map(t => f(t._1, t._2));
+        }
+
+    }
 
 }

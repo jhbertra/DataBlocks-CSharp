@@ -2,40 +2,45 @@ using System;
 using System.Linq;
 
 using DataBlocks.Prelude;
+using JetBrains.Annotations;
+using LanguageExt;
 
 namespace DataBlocks.Core
 {
 
-  public sealed class Decoder<TRaw, TRich> where TRaw : struct, IMonoid<TRaw>
-  {
-
-    public Decoder(string id, Func<string, TRaw, Result<DecoderError, TRich>> run)
+    public sealed class Decoder<TRaw, T>
     {
-      this.Run = run;
-      this.Id = id;
+
+        [NotNull] public readonly string Id;
+        [NotNull] public readonly Func<string, TRaw, Either<DecoderErrors, T>> Run;
+
+        public Decoder([NotNull] Func<string, TRaw, Either<DecoderErrors, T>> run, [CanBeNull] string id = null)
+        {
+            this.Run = run == null ? run : throw new ArgumentNullException(nameof(run));
+            this.Id = id ?? string.Empty;
+        }
+
+        public static Decoder<TRaw, T> Return(Either<DecoderErrors, T> x)
+        {
+            return new Decoder<TRaw, T>((i, _) => x);
+        }
+
+        public static Decoder<TRaw, T> Zero => Decoder<TRaw, T>.Return(DecoderErrors.Zero);
+
+        public Either<DecoderErrors, T> Decode([NotNull] TRaw rawData)
+        {
+            if (rawData == null) throw new ArgumentNullException(nameof(rawData));
+            return this.Run(this.Id, rawData);
+        }
+
+        public Decoder<TRaw, T> SetId([NotNull] string id)
+        {
+            if (id == null) throw new ArgumentNullException(nameof(id));
+
+            return new Decoder<TRaw, T>(this.Run, this.Id);
+        }
+
+
     }
-
-    public static Decoder<TRaw, TRich> Return(string id, Result<DecoderError, TRich> x)
-    {
-      return new Decoder<TRaw, TRich>(id, (i, _) => x);
-    }
-
-    public static Decoder<TRaw, TRich> Succeed(string id, TRich x)
-    {
-      return Decoder<TRaw, TRich>.Return(id, Result<DecoderError, TRich>.Ok(x));
-    }
-
-    public static Decoder<TRaw, TRich> Fail(string id, DecoderError e)
-    {
-      return Decoder<TRaw, TRich>.Return(id, Result<DecoderError, TRich>.Error(e));
-    }
-
-    public readonly string Id;
-    public readonly Func<string, TRaw, Result<DecoderError, TRich>> Run;
-
-    public static Decoder<TRaw, TRich> Zero =>
-      Decoder<TRaw, TRich>.Return("", Result<DecoderError, TRich>.Zero);
-
-  }
 
 }

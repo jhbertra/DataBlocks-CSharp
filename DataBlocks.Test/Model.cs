@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DataBlocks.Prelude;
+using LanguageExt;
 
 namespace DataBlocks.Test
 {
@@ -8,11 +9,11 @@ namespace DataBlocks.Test
   public sealed class Natural
   {
 
-    public static Result<ValueString, Natural> Create(int value)
+    public static Either<string, Natural> Create(int value)
     {
       return value > 0
-        ? Result<ValueString, Natural>.Ok(new Natural(value))
-        : Result<ValueString, Natural>.Error("Value must be positive");
+        ? (Either<string, Natural>) new Natural(value)
+        : "Value must be positive";
     }
 
     private Natural(int value)
@@ -44,15 +45,15 @@ namespace DataBlocks.Test
 
     public static ChildFieldType Case1(int value)
     {
-      return new ChildFieldType(Maybe<int>.Some(value), Maybe<string>.None);
+      return new ChildFieldType(Option<int>.Some(value), Option<string>.None);
     }
 
     public static ChildFieldType Case2(string value)
     {
-      return new ChildFieldType(Maybe<int>.None, Maybe<string>.Some(value));
+      return new ChildFieldType(Option<int>.None, Option<string>.Some(value));
     }
 
-    private ChildFieldType(Maybe<int> case1, Maybe<string> case2)
+    private ChildFieldType(Option<int> case1, Option<string> case2)
     {
       this.Int = case1;
       this.Str = case2;
@@ -74,8 +75,8 @@ namespace DataBlocks.Test
       return !(a == b);
     }
 
-    public readonly Maybe<int> Int;
-    public readonly Maybe<string> Str;
+    public readonly Option<int> Int;
+    public readonly Option<string> Str;
 
   }
 
@@ -149,7 +150,7 @@ namespace DataBlocks.Test
       string url,
       Natural connectionLimit,
       IEnumerable<string> trustedUrls,
-      Maybe<string> email,
+      Option<string> email,
       AdvancedOptions advanced)
     {
       return new ImaginationConfig(
@@ -165,7 +166,7 @@ namespace DataBlocks.Test
       string url,
       Natural connectionLimit,
       IEnumerable<string> trustedUrls,
-      Maybe<string> email,
+      Option<string> email,
       AdvancedOptions advanced)
     {
       this.Url = url;
@@ -178,7 +179,7 @@ namespace DataBlocks.Test
     public readonly string Url;
     public readonly Natural ConnectionLimit;
     public readonly IEnumerable<string> TrustedUrls;
-    public readonly Maybe<string> Email;
+    public readonly Option<string> Email;
     public readonly AdvancedOptions Advanced;
 
     public override bool Equals(object obj)

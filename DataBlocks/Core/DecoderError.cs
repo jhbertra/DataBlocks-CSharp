@@ -1,91 +1,57 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 using DataBlocks.Prelude;
+using JetBrains.Annotations;
+using LanguageExt.TypeClasses;
 
 namespace DataBlocks.Core
 {
 
-  public struct DecoderError : IMonoid<DecoderError>
-  {
-
-    public static DecoderError Single(string id, string message) => new DecoderError(new[] { new Data(id, message) });
-
-    public DecoderError(IEnumerable<Data> errors)
+    public struct DecoderError
     {
-      this.Errors = errors;
+
+        [NotNull] public readonly string Id;
+        [NotNull] public readonly string Message;
+
+        public DecoderError([NotNull] string id, [NotNull] string message)
+        {
+            this.Id = id == null ? id : throw new ArgumentNullException(nameof(id));
+            this.Message = message == null ? message : throw new ArgumentNullException(nameof(message));
+        }
+
+        public override string ToString()
+        {
+            return $"{{id: {this.Id}, message: {this.Message}}}";
+        }
+
     }
 
-    public readonly IEnumerable<Data> Errors;
-
-    public DecoderError Zero => new DecoderError(Enumerable.Empty<Data>());
-
-    public DecoderError Append(DecoderError b)
+    public struct DecoderErrors
     {
-      return new DecoderError(this.Errors.Concat(b.Errors));
+
+        public static DecoderErrors Single(string id, string message) => new DecoderErrors(new[] { new DecoderError(id, message) });
+
+        public DecoderErrors([NotNull] IEnumerable<DecoderError> errors)
+        {
+            this.Errors = errors == null ? errors : throw new ArgumentNullException(nameof(errors));
+        }
+
+        public readonly IEnumerable<DecoderError> Errors;
+
+        public static DecoderErrors Zero => new DecoderErrors(Enumerable.Empty<DecoderError>());
+
+        public DecoderErrors Append(DecoderErrors b)
+        {
+            return new DecoderErrors(this.Errors.Concat(b.Errors));
+        }
+
+        public override string ToString()
+        {
+            return $"[{string.Join(", ", this.Errors.Select(x => x.ToString()))}]";
+        }
+
     }
 
-    public override bool Equals(object obj)
-    {
-      return obj is DecoderError other && this == other;
-    }
-
-    public static bool operator ==(DecoderError a, DecoderError b)
-    {
-      return a.Errors.SequenceEqual(b.Errors);
-    }
-
-    public static bool operator !=(DecoderError a, DecoderError b)
-    {
-      return !(a == b);
-    }
-
-    public override int GetHashCode()
-    {
-      return this.Errors.GetHashCode();
-    }
-
-    public override string ToString()
-    {
-      return $"[{string.Join(", ", this.Errors.Select(x => x.ToString()))}]";
-    }
-
-    public struct Data
-    {
-      public Data(string id, string message)
-      {
-        this.Id = id;
-        this.Message = message;
-      }
-
-      public readonly string Id;
-      public readonly string Message;
-
-      public override bool Equals(object obj)
-      {
-        return obj is Data other && this == other;
-      }
-
-      public static bool operator ==(Data a, Data b)
-      {
-        return a.Id == b.Id
-          && a.Message == b.Message;
-      }
-
-      public static bool operator !=(Data a, Data b)
-      {
-        return !(a == b);
-      }
-
-      public override int GetHashCode()
-      {
-        return this.Id.GetHashCode() ^ (this.Message.GetHashCode() * 397);
-      }
-
-      public override string ToString()
-      {
-        return $"{{id: {this.Id}, message: {this.Message}}}";
-      }
-    }
-  }
 }
