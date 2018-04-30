@@ -8,7 +8,6 @@ using Xunit;
 
 using DataBlocks.Core;
 using DataBlocks.Json;
-using DataBlocks.Prelude;
 
 namespace DataBlocks.Test
 {
@@ -327,7 +326,7 @@ namespace DataBlocks.Test
                 }
             }")
             .Match(
-                v => DecoderErrors.Zero,
+                v => DecoderErrors.Empty,
                 e => e
             );
 

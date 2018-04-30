@@ -5,18 +5,29 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 
 using DataBlocks.Core;
-using DataBlocks.Prelude;
 using LanguageExt;
 using System.Collections.Immutable;
 
 namespace DataBlocks.Json
 {
 
+    /// <summary>
+    /// Utilities for decoding JSON
+    /// </summary>
     public static class JsonDecoder
     {
 
+        /// <summary>
+        /// Create a JSON decoder from a function.
+        /// </summary>
         public static Decoder<JToken, T> Create<T>(Func<string, JToken, Either<DecoderErrors, T>> decode) => new Decoder<JToken, T>(decode, "$");
+
+
+        /// <summary>
+        /// Create a JSON decoder that will return a predetermined result.
+        /// </summary>
         public static Decoder<JToken, T> Return<T>(Either<DecoderErrors, T> result) => Create((id, _) => result);
+
 
         private static Decoder<JToken, T> Value<T>(string description, Func<JValue, bool> valuePredicate, Func<object, T> convert) =>
             Create(
@@ -25,36 +36,72 @@ namespace DataBlocks.Json
                       ? (Either<DecoderErrors, T>)convert(v.Value)
                       : DecoderErrors.Single(id, $"Expected {description} value"));
 
+
+        /// <summary>
+        /// Decodes a boolean value.
+        /// </summary>
         public static readonly Decoder<JToken, bool> Bool =
             Value("a boolean", v => v.Type == JTokenType.Boolean, Convert.ToBoolean);
 
+
+        /// <summary>
+        /// Decodes a decimal value.
+        /// </summary>
         public static readonly Decoder<JToken, decimal> Decimal =
             Value("a decimal", v => v.Type == JTokenType.Float || v.Type == JTokenType.Integer, Convert.ToDecimal);
 
+
+        /// <summary>
+        /// Decodes a double value.
+        /// </summary>
         public static readonly Decoder<JToken, double> Double =
             Value("a double", v => v.Type == JTokenType.Float || v.Type == JTokenType.Integer, Convert.ToDouble);
 
+
+        /// <summary>
+        /// Decodes a float value.
+        /// </summary>
         public static readonly Decoder<JToken, float> Float =
             Value("a float", v => v.Type == JTokenType.Float || v.Type == JTokenType.Integer, Convert.ToSingle);
 
+
+        /// <summary>
+        /// Decodes a GUID value.
+        /// </summary>
         public static readonly Decoder<JToken, Guid> Guid =
             Value(
                 "a GUID",
                 v => v.Type == JTokenType.Guid || v.Type == JTokenType.String && System.Guid.TryParse((string)v.Value, out var guid),
                 x => x as Guid? ?? System.Guid.Parse((string)x));
 
+
+        /// <summary>
+        /// Decodes an integer value.
+        /// </summary>
         public static readonly Decoder<JToken, int> Int =
             Value("an integer", v => v.Type == JTokenType.Integer, Convert.ToInt32);
 
+
+        /// <summary>
+        /// Decodes a string value.
+        /// </summary>
         public static readonly Decoder<JToken, string> String =
             Value("a string", v => v.Type == JTokenType.String, x => (string)x);
 
+
+        /// <summary>
+        /// Decodes an optional value.
+        /// </summary>
         public static Decoder<JToken, Option<T>> Nullable<T>(Decoder<JToken, T> valueDecoder) =>
             Create((id, json) =>
                 json.Type == JTokenType.Null
                     ? Option<T>.None
                     : valueDecoder.Run(id, json).Map(Option<T>.Some));
 
+
+        /// <summary>
+        /// Decodes an array.
+        /// </summary>
         public static Decoder<JToken, IEnumerable<T>> Array<T>(Decoder<JToken, T> elementDecoder) =>
             Create((id, json) =>
             {
@@ -66,7 +113,7 @@ namespace DataBlocks.Json
                             new
                             {
                                 Results = ImmutableList.Create<T>(),
-                                Errors = DecoderErrors.Zero
+                                Errors = DecoderErrors.Empty
                             },
                             (state, r) =>
                                 r.Match(
@@ -84,7 +131,13 @@ namespace DataBlocks.Json
                 }
             });
 
+
+        /// <summary>
+        /// Creates an empty decoder for decoding an object by specifying fields
+        /// to decode.
+        /// </summary>
         public static Decoder<JToken, Unit> Object<T>() => Return<Unit>(Unit.Default);
+
 
         private static Decoder<JToken, T> Required<T>(string fieldName, Decoder<JToken, T> fieldDecoder) =>
             Create(
@@ -112,24 +165,44 @@ namespace DataBlocks.Json
                 }
             );
 
+
+        /// <summary>
+        /// Decodes a required field of an object and adds the result
+        /// to the output.
+        /// </summary>
         public static Decoder<JToken, T> Required<T>(
             this Decoder<JToken, Unit> decoder,
             string fieldName,
             Decoder<JToken, T> fieldDecoder) =>
           Required(fieldName, fieldDecoder);
 
+
+        /// <summary>
+        /// Decodes a required field of an object and adds the result
+        /// to the output.
+        /// </summary>
         public static Decoder<JToken, Pair<T1, T2>> Required<T1, T2>(
             this Decoder<JToken, T1> decoder,
             string fieldName,
             Decoder<JToken, T2> fieldDecoder) =>
           decoder.Combine(Required(fieldName, fieldDecoder));
 
+
+        /// <summary>
+        /// Decodes an optional field of an object and adds the result
+        /// to the output.
+        /// </summary>
         public static Decoder<JToken, Option<T>> Optional<T>(
             this Decoder<JToken, Unit> decoder,
             string fieldName,
             Decoder<JToken, T> fieldDecoder) =>
           Optional(fieldName, fieldDecoder);
 
+
+        /// <summary>
+        /// Decodes an optional field of an object and adds the result
+        /// to the output.
+        /// </summary>
         public static Decoder<JToken, Pair<T1, Option<T2>>> Optional<T1, T2>(
             this Decoder<JToken, T1> decoder,
             string fieldName,

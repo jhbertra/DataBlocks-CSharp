@@ -9,11 +9,14 @@ using Newtonsoft.Json.Linq;
 namespace DataBlocks.Json
 {
 
-    public struct MonoidJToken : Monoid<JToken>
+    public static class JsonUtil
     {
 
+        /// <summary>
+        /// Append to pieces of JSON data together.
+        /// </summary>
         [NotNull]
-        public JToken Append([NotNull] JToken x, [NotNull] JToken y)
+        public static JToken Append([NotNull] JToken x, [NotNull] JToken y)
         {
             if (x == null) throw new ArgumentNullException(nameof(x));
             if (y == null) throw new ArgumentNullException(nameof(y));
@@ -47,11 +50,12 @@ namespace DataBlocks.Json
             }
         }
 
+
+        /// <summary>
+        /// Create a piece of empty JSON data (undefined).
+        /// </summary>
         [NotNull]
-        public JToken Empty()
-        {
-            return new JObject();
-        }
+        public static JToken Empty => JValue.CreateUndefined();
 
     }
 

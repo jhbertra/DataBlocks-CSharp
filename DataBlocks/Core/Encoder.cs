@@ -1,6 +1,5 @@
 using System;
 
-using DataBlocks.Prelude;
 using JetBrains.Annotations;
 using LanguageExt;
 using LanguageExt.TypeClasses;
@@ -8,43 +7,60 @@ using LanguageExt.TypeClasses;
 namespace DataBlocks.Core
 {
 
-    public struct Encoder<TRaw, T>
-    {
+    /// <summary>
+    /// Converts a data type into a raw data type.
+    /// </summary>
+    [NotNull] public delegate TRaw Encoder<TRaw, T>([NotNull] T data);
 
-        public Encoder([NotNull] Func<T, TRaw> encode)
-        {
-            if (encode == null) throw new ArgumentNullException(nameof(encode));
-            this.Encode = encode;
-        }
 
-        [NotNull] public readonly Func<T, TRaw> Encode;
-
-    }
+    /// <summary>
+    /// Utilities for creating Encoders.
+    /// </summary>
 
     public static class Encoder
     {
 
-        public static Encoder<TRaw, T> Divide<MonoidRaw, TRaw, T, T1, T2>(
+        /// <summary>
+        /// Create an encoder that breaks a larger data structure
+        /// into two pieces and handles each piece with a separate
+        /// encoder, combining the outputs in order.
+        /// </summary>
+        public static Encoder<TRaw, T> Divide<TRaw, T, T1, T2>(
+            [NotNull] Func<TRaw, TRaw, TRaw> appendResults,
             [NotNull] Func<T, Pair<T1, T2>> divide,
             Encoder<TRaw, T1> a,
-            Encoder<TRaw, T2> b) where MonoidRaw : struct, Monoid<TRaw>
+            Encoder<TRaw, T2> b)
         {
+            if (appendResults == null) throw new ArgumentNullException(nameof(appendResults));
             if (divide == null) throw new ArgumentNullException(nameof(divide));
 
-            return new Encoder<TRaw, T>(
-                data =>
-                {
-                    var pair = divide(data);
-                    return default(MonoidRaw).Append(a.Encode(pair._1), b.Encode(pair._2));
-                }
-            );
+            return data =>
+            {
+                var pair = divide(data);
+                return appendResults(a(pair._1), b(pair._2));
+            };
         }
 
-        public static Encoder<TRaw, T> Conquer<MonoidRaw, TRaw, T>() where MonoidRaw : struct, Monoid<TRaw>
+
+        /// <summary>
+        /// Create an encoder that outputs nothing to terminate a chain of
+        /// data structure divisions.
+        /// </summary>
+        /// /// <remarks>
+        /// Acts as an identity to Divide.
+        /// </remarks>
+        public static Encoder<TRaw, T> Conquer<TRaw, T>([NotNull] TRaw emptyRaw)
         {
-            return new Encoder<TRaw, T>(_ => default(MonoidRaw).Empty());
+            if (emptyRaw == null) throw new ArgumentNullException(nameof(emptyRaw));
+
+            return _ => emptyRaw;
         }
 
+
+        /// <summary>
+        /// Create an encoder that runs one of the two given encoders depending
+        /// on the result of toEither.
+        /// </summary>
         public static Encoder<TRaw, T> Choose<TRaw, T, T1, T2>(
             [NotNull] Func<T, Either<T1, T2>> toEither,
             Encoder<TRaw, T1> a,
@@ -52,14 +68,22 @@ namespace DataBlocks.Core
         {
             if (toEither == null) throw new ArgumentNullException(nameof(toEither));
 
-            return new Encoder<TRaw, T>(t => toEither(t).Match(b.Encode, a.Encode));
+            return t => toEither(t).Match(b.Invoke, a.Invoke);
         }
 
+
+        /// <summary>
+        /// Create an encoder that represents a lack of valid choices
+        /// in a sequence of encoder choices, for example at the start.
+        /// </summary>
+        /// <remarks>
+        /// Acts as an identity to Choose.
+        /// </remarks>
         public static Encoder<TRaw, T> Lose<TRaw, T>([NotNull] Func<T, Void> f)
         {
             if (f == null) throw new ArgumentNullException(nameof(f));
 
-            return new Encoder<TRaw, T>(t => Void.Absurd<TRaw>(f(t)));
+            return t => Void.Absurd<TRaw>(f(t));
         }
 
     }
