@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>DataBlocks.CSharp</PackageId>
-    <PackageVersion>1.0.1</PackageVersion>
+    <PackageVersion>1.0.2</PackageVersion>
     <Authors>Jamie Bertram</Authors>
     <PackageLicenseUrl>https://github.com/jhbertra/DataBlocks-CSharp/blob/master/LICENSE.md</PackageLicenseUrl>
     <Owners>Jamie Bertram</Owners>
