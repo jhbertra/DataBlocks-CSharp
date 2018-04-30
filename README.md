@@ -34,7 +34,7 @@ intCodec.Decode("1"); // 1
 intCodec.Encode(1); // "1"
 ```
 
-# Fundamental Types
+## Fundamental Types
 
 The fundamental building blocks of this library are, in essence, functions. Functions
 are particularly well suited for creating `Codecs`, as they way they can be composed
@@ -43,7 +43,7 @@ fundamental philosophy of functional programming. The resulting code tends to re
 formal documentation describing how an application's data is structured, with the added
 benefit of being able to execute said documentation.
 
-## Decoders
+### Decoders
 
 A `Decoder` is a function that reads raw data and attempts to convert it to a structured
 format.  This operation may fail, as the raw format may fail to express the domain data
@@ -61,7 +61,7 @@ d.Decode("1"); // Right(1)
 d.Decode("foo"); // Left({theSpecificDataBeingDecoded: Expected an integer})
 ```
 
-## Encoders
+### Encoders
 
 An `Encoder` is a function that reverses a decoder. It writes data to a raw format.
 The only difference between an `Encoder` and a `Decoder` is that the operation never
@@ -75,7 +75,7 @@ var e = new Encoder<string, int>(i => i.ToString());
 e.Encode(1); // "1"
 ```
 
-## Codecs
+### Codecs
 
 A `Codec` is simply a matching pair of a `Decoder` and an `Encoder`.  `Decoder` + `Encoder` = `Codec`.
 
@@ -88,14 +88,14 @@ codec.Decode("foo"); // Left({newId: Expected an integer})
 codec.Encode(1); // "1"
 ```
 
-# Fundamental Operations
+## Fundamental Operations
 
 So far, these examples probably don't seem very exciting. That's because they are
 absolutely basic. The fact that they are so basic however means that they are also
 incredibly flexible. They snap together like building blocks (hence the name of the
 library). Here are some of the most common ways this is accomplished.
 
-## Invmap
+### Invmap
 
 Given a `Codec<TRaw, T1>`, provide a function `T1 -> T2` to invoke on the result of
 its decoder, and and inverse function `T2 -> T1` to invoke on the input of its encoder
@@ -107,7 +107,7 @@ codec.Invmap(i => i * 2, i => i / 2); // Codec<string, int> Decode doubles the i
 codec.Invmap(Convert.ToDecimal, Convert.ToInt); // Codec<string, decimal>
 ```
 
-## ChainValidation
+### ChainValidation
 
 Given a `Codec<TRaw, T1>`, provide a function `T1 -> Either<string, T2>` to invoke on
 the result of its decoder, and and inverse function `T2 -> T1` to invoke on the input
@@ -141,7 +141,7 @@ naturalCodec.Decode("foo"); // Left({nat: Expected an integer})
 naturalCodec.Encode(new Natural(1)); // "1"
 ```
 
-## Switch + Case
+### Switch + Case
 
 Create a `Codec` that can handle multiple valid representations.
 
@@ -169,7 +169,7 @@ contactInfoCodec.Encode(new EmailContactInfo("asdf", "test.com")) // "asdf@test.
 contactInfoCodec.Encode(new PhoneContactInfo(555, 1234)) // "555-1234"
 ```
 
-## BeginConstruction + Part + Construct
+### BeginConstruction + Part + Construct
 
 Create a `Codec` that can handle large composite data structures by
 combining codecs for their fields.
@@ -222,4 +222,109 @@ contactCodec.Decode(new Dictionary<string, string>
 }); // Left({info: Key not found})
 
 contactCodec.Encode(new Contact("Peter Joe", new EmailContact("asdf", "test.com"))); // { "name": "Peter Joe", "info": "asdf@test.com" }
+```
+
+## Handling JSON
+
+`DataBlocks` comes bundled with a complete set of tools for writing JSON codecs.
+These tools are also intended to serve as an example of how to use the low-level
+`Codec` API to create a domain-specific `Codec` API.
+
+Most .NET JSON frameworks make use of reflection and object-oriented techniques
+to create serializers. The main issues with these approaches are: 1. They do not
+compose easily, as this is often achieved by way of implementing abstract classes
+to handle specific types, 2. The heavy use of reflection leads to a somewhat
+cryptic blackbox API that may not operate in an obvious way, and 3. Error handling
+is done via `Exceptions` which is specifically not what `Exceptions` are supposed to
+be used for in .NET (the intended use being diagnostics and debugging rather than
+control flow).
+
+More recently, frameworks that make use of techniques like duck-typing and interfaces
+that specify `ToJson` and `FromJson` methods have become available, but these still
+exhibit the problem of hard-coding serialization logic into the domain model. The
+goal of `DataBlocks.Json` is to be completely transparent and not require your domain
+model to be decorated with attributes or serialization methods.  Here is an example of
+how the API is used:
+
+```cs
+using DataBlocks.Json;
+
+struct ContactBook
+{
+    public ContactBook(IEnumerable<Contact> contacts, Option<string> notes)
+    {
+        this.Contacts = contacts;
+        this.Notes = notes;
+    }
+    public readonly IEnumerable<Contact> Contacts;
+    public readonly Option<string> Notes;
+}
+
+var contactInfoCodec = JsonCodec.Switch<ContactInfo>
+    .Case(DownCast<IContactInfo, EmailContactInfo>, UpCast<EmailContactInfo, IContactInfo>, emailCodec)
+    .Case(DownCast<IContactInfo, PhoneContactInfo>, UpCast<PhoneContactInfo, IContactInfo>, phoneCodec)
+    .SetId("contactInfo");
+
+var contactCodec = JsonObject<Contact>()
+    .Required("name", x => x.Name, JsonCodec.String)
+    .Required("info", x => x.Info, contactInfoCodec)
+    .Construct((name, info) => new Contact(name, info));
+
+var contactBookCodec = JsonObject<ContactBook>()
+    .Required("contacts", x => x.Contacts, JsonCodec.Array(contactCodec))
+    .Optional("notes", x => x.Notes, JsonCodec.String)
+    .Construct((contacts, notes) => new ContactBook(contacts, notes));
+
+contactBookCodec.DecodeString(@"{
+    'contacts': [
+        {
+            'name': 'Fred P',
+            'info': '123-4567'
+        },
+        {
+            'name': 'Joe Bo',
+            'info': 'foo@bar.com'
+        }
+    ]
+}") // Right(ContactBook([Contact("Fred P", PhoneContactInfo(123, 4567)), Contact("Joe Bo", EmailContactInfo("foo", "bar"))], None));
+contactBookCodec.DecodeString(@"{
+    'contacts': [
+        {
+            'name': 'Fred P',
+            'info': '123-4567'
+        }
+    ],
+    'notes': 'something...'
+}") // Right(ContactBook([Contact("Fred P", PhoneContactInfo(123, 4567))], Some("something...")))
+contactBookCodec.DecodeString(@"{
+    'contacts': [
+        {
+            'name': 'Fred P'
+        }
+    ],
+    'notes': true
+}") // Left({$.contacts[0].info: RequiredValue, $.notes: Expected a string value})
+
+contactBookCodec.EncodeString(new ContactBook(
+    new[]
+    {
+        new Contact("Fred P", new PhoneContactInfo(123, 4567)),
+        new Contact("Joe Bo", new EmailContactInfo("foo", "bar"))
+    },
+    "something..."));;
+/*
+{
+    "contacts": [
+        {
+            "name": "Fred P",
+            "info": "123-4567"
+        },
+        {
+            "name": "Joe Bo",
+            "info": "foo@bar.com"
+        }
+    ],
+    "notes": "something..."
+}
+*/
 ```
