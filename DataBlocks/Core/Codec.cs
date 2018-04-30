@@ -63,6 +63,9 @@ namespace DataBlocks.Core
 
         public static Codec<TRaw, T> Lift<TRaw, T>(Func<TRaw, T> decode, Func<T, TRaw> encode)
         {
+            if (decode == null) throw new ArgumentNullException(nameof(decode));
+            if (encode == null) throw new ArgumentNullException(nameof(encode));
+
             return new Codec<TRaw, T>(
                 new Decoder<TRaw, T>((_, x) => decode(x)),
                 new Encoder<TRaw, T>(encode)

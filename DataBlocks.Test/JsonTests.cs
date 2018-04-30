@@ -179,8 +179,8 @@ namespace DataBlocks.Test
     {
       Nullable(String)
           .DecodeString(input)
-          .Match<object>(
-              v => { Assert.Equal(expected, v.Match(x => x, () => null)); return null; },
+          .Match(
+              v => Assert.Equal(expected ?? Option<string>.None, v),
               e => throw new Xunit.Sdk.AssertActualExpectedException(expected, e, "Decode failed.")
           );
     }
@@ -198,9 +198,9 @@ namespace DataBlocks.Test
     {
       Nullable(String)
           .DecodeString("true")
-          .Match<object>(
+          .Match(
               v => throw new Xunit.Sdk.AssertActualExpectedException("A Failure", v, "Expected the decoding to fail."),
-              e => { Assert.Equal("Expected a string value", string.Join("", e.Errors.Select(x => x.Message))); return null; }
+              e => Assert.Equal("Expected a string value", string.Join("", e.Errors.Select(x => x.Message)))
           );
     }
 
@@ -212,8 +212,8 @@ namespace DataBlocks.Test
     {
       Array(String)
           .DecodeString(input)
-          .Match<object>(
-              v => { Assert.Equal(expected, v); return null; },
+          .Match(
+              v => Assert.Equal(expected, v),
               e => throw new Xunit.Sdk.AssertActualExpectedException(expected, e, "Decode failed.")
           );
     }
@@ -245,9 +245,9 @@ namespace DataBlocks.Test
     {
       Array(String)
           .DecodeString(input)
-          .Match<object>(
+          .Match(
               v => throw new Xunit.Sdk.AssertActualExpectedException("A Failure", v, "Expected the decoding to fail."),
-              e => { Assert.Equal("Expected an array", string.Join("", e.Errors.Select(x => x.Message))); return null; }
+              e => Assert.Equal("Expected an array", string.Join("", e.Errors.Select(x => x.Message)))
           );
     }
 

@@ -17,8 +17,8 @@ namespace DataBlocks.Core
 
         public DecoderError([NotNull] string id, [NotNull] string message)
         {
-            this.Id = id == null ? id : throw new ArgumentNullException(nameof(id));
-            this.Message = message == null ? message : throw new ArgumentNullException(nameof(message));
+            this.Id = id == null ? throw new ArgumentNullException(nameof(id)) : id;
+            this.Message = message == null ? throw new ArgumentNullException(nameof(message)) :  message;
         }
 
         public override string ToString()
@@ -35,16 +35,26 @@ namespace DataBlocks.Core
 
         public DecoderErrors([NotNull] IEnumerable<DecoderError> errors)
         {
-            this.Errors = errors == null ? errors : throw new ArgumentNullException(nameof(errors));
+            this.Errors = errors == null ? throw new ArgumentNullException(nameof(errors)) : errors;
         }
 
-        public readonly IEnumerable<DecoderError> Errors;
+        [NotNull] public readonly IEnumerable<DecoderError> Errors;
 
         public static DecoderErrors Zero => new DecoderErrors(Enumerable.Empty<DecoderError>());
 
         public DecoderErrors Append(DecoderErrors b)
         {
             return new DecoderErrors(this.Errors.Concat(b.Errors));
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is DecoderErrors d && d.Errors.SequenceEqual(this.Errors);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Errors.GetHashCode();
         }
 
         public override string ToString()

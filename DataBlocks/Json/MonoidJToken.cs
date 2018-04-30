@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using JetBrains.Annotations;
 
@@ -14,6 +15,9 @@ namespace DataBlocks.Json
         [NotNull]
         public JToken Append([NotNull] JToken x, [NotNull] JToken y)
         {
+            if (x == null) throw new ArgumentNullException(nameof(x));
+            if (y == null) throw new ArgumentNullException(nameof(y));
+            
             if (x.Type == JTokenType.Undefined) return y;
             else if (y.Type == JTokenType.Undefined) return x;
             else if (x is JArray a1 && y is JArray a2) return new JArray(a1.Append(a2));

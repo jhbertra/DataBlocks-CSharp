@@ -127,6 +127,8 @@ namespace DataBlocks.Core
             Delegate18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -157,6 +159,8 @@ namespace DataBlocks.Core
             Delegate19<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -188,6 +192,8 @@ namespace DataBlocks.Core
             Delegate20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -220,6 +226,8 @@ namespace DataBlocks.Core
             Delegate21<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -253,6 +261,8 @@ namespace DataBlocks.Core
             Delegate22<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -287,6 +297,8 @@ namespace DataBlocks.Core
             Delegate23<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -322,6 +334,8 @@ namespace DataBlocks.Core
             Delegate24<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -358,6 +372,8 @@ namespace DataBlocks.Core
             Delegate25<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -395,6 +411,8 @@ namespace DataBlocks.Core
             Delegate26<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -433,6 +451,8 @@ namespace DataBlocks.Core
             Delegate27<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -472,6 +492,8 @@ namespace DataBlocks.Core
             Delegate28<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -512,6 +534,8 @@ namespace DataBlocks.Core
             Delegate29<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -553,6 +577,8 @@ namespace DataBlocks.Core
             Delegate30<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -595,6 +621,8 @@ namespace DataBlocks.Core
             Delegate31<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -638,6 +666,8 @@ namespace DataBlocks.Core
             Delegate32<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -682,6 +712,8 @@ namespace DataBlocks.Core
             Delegate33<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -727,6 +759,8 @@ namespace DataBlocks.Core
             Delegate34<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -773,6 +807,8 @@ namespace DataBlocks.Core
             Delegate35<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -820,6 +856,8 @@ namespace DataBlocks.Core
             Delegate36<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -868,6 +906,8 @@ namespace DataBlocks.Core
             Delegate37<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -917,6 +957,8 @@ namespace DataBlocks.Core
             Delegate38<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -967,6 +1009,8 @@ namespace DataBlocks.Core
             Delegate39<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1018,6 +1062,8 @@ namespace DataBlocks.Core
             Delegate40<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1070,6 +1116,8 @@ namespace DataBlocks.Core
             Delegate41<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1123,6 +1171,8 @@ namespace DataBlocks.Core
             Delegate42<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1177,6 +1227,8 @@ namespace DataBlocks.Core
             Delegate43<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1232,6 +1284,8 @@ namespace DataBlocks.Core
             Delegate44<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1288,6 +1342,8 @@ namespace DataBlocks.Core
             Delegate45<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1345,6 +1401,8 @@ namespace DataBlocks.Core
             Delegate46<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1403,6 +1461,8 @@ namespace DataBlocks.Core
             Delegate47<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1462,6 +1522,8 @@ namespace DataBlocks.Core
             Delegate48<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1522,6 +1584,8 @@ namespace DataBlocks.Core
             Delegate49<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1583,6 +1647,8 @@ namespace DataBlocks.Core
             Delegate50<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1645,6 +1711,8 @@ namespace DataBlocks.Core
             Delegate51<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1708,6 +1776,8 @@ namespace DataBlocks.Core
             Delegate52<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1772,6 +1842,8 @@ namespace DataBlocks.Core
             Delegate53<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1837,6 +1909,8 @@ namespace DataBlocks.Core
             Delegate54<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1903,6 +1977,8 @@ namespace DataBlocks.Core
             Delegate55<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -1970,6 +2046,8 @@ namespace DataBlocks.Core
             Delegate56<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -2038,6 +2116,8 @@ namespace DataBlocks.Core
             Delegate57<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -2107,6 +2187,8 @@ namespace DataBlocks.Core
             Delegate58<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -2177,6 +2259,8 @@ namespace DataBlocks.Core
             Delegate59<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -2248,6 +2332,8 @@ namespace DataBlocks.Core
             Delegate60<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -2320,6 +2406,8 @@ namespace DataBlocks.Core
             Delegate61<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60, T61, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -2393,6 +2481,8 @@ namespace DataBlocks.Core
             Delegate62<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60, T61, T62, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -2467,6 +2557,8 @@ namespace DataBlocks.Core
             Delegate63<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60, T61, T62, T63, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -2542,6 +2634,8 @@ namespace DataBlocks.Core
             Delegate64<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60, T61, T62, T63, T64, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,
@@ -2618,6 +2712,8 @@ namespace DataBlocks.Core
             Delegate65<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40, T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60, T61, T62, T63, T64, T65, TRich> f)
             where MonoidRaw : struct, Monoid<TRaw>
         {
+            if (f == null) throw new ArgumentNullException(nameof(f));
+            
             return new Codec<TRaw, TRich>(
               codec.Decoder.Map(t => f(
                 t._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1._1,

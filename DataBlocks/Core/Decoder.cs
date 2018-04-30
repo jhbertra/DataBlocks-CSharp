@@ -16,7 +16,7 @@ namespace DataBlocks.Core
 
         public Decoder([NotNull] Func<string, TRaw, Either<DecoderErrors, T>> run, [CanBeNull] string id = null)
         {
-            this.Run = run == null ? run : throw new ArgumentNullException(nameof(run));
+            this.Run = run == null ? throw new ArgumentNullException(nameof(run)) : run;
             this.Id = id ?? string.Empty;
         }
 
